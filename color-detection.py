@@ -1,3 +1,4 @@
+from turtle import color
 import cv2
 import numpy as np
 
@@ -7,10 +8,17 @@ def track(x):
     pass
 
 cv2.namedWindow("trackbar")
-cv2.createTrackbar("low_h", "trackbar", 0, 180, track)
-cv2.createTrackbar("low_s", "trackbar", 0, 255, track)
-cv2.createTrackbar("low_v", "trackbar", 0, 255, track)
-cv2.createTrackbar("hi_h", "trackbar", 180, 180, track)
+# cv2.createTrackbar("low_h", "trackbar", 0, 180, track)    #par defaut
+# cv2.createTrackbar("low_s", "trackbar", 0, 255, track)
+# cv2.createTrackbar("low_v", "trackbar", 0, 255, track)
+# cv2.createTrackbar("hi_h", "trackbar", 180, 180, track)
+# cv2.createTrackbar("hi_s", "trackbar", 255, 255, track)
+# cv2.createTrackbar("hi_v", "trackbar", 255, 255, track)
+
+cv2.createTrackbar("low_h", "trackbar", 110, 180, track)    #pour detecter le bleu
+cv2.createTrackbar("low_s", "trackbar", 150, 255, track)
+cv2.createTrackbar("low_v", "trackbar", 20, 255, track)
+cv2.createTrackbar("hi_h", "trackbar", 130, 180, track)
 cv2.createTrackbar("hi_s", "trackbar", 255, 255, track)
 cv2.createTrackbar("hi_v", "trackbar", 255, 255, track)
 
@@ -36,12 +44,11 @@ while True:
         for contour in contours:
             if cv2.contourArea(contour) > 300:      #pixels
                 x, y, w, h = cv2.boundingRect(contour)
+                cv2.circle(img, (int((2*x+w)/2), int((2*y+h)/2)), radius=10, color=(0,255,0), thickness=-1)
                 cv2.rectangle(img, (x,y), (x+w, y+h), (0,0,255), 3)
                 # print(f"position:{x,y}")
     
     cv2.imshow("mask", mask), cv2.imshow("image", img)
-    
-    
     
     if cv2.waitKey(1) & 0xFF == ord("q"):
         cv2.destroyAllWindows()
