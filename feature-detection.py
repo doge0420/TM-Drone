@@ -5,7 +5,7 @@ img = cv2.imread("./Images/1.png")
 
 cap = cv2.VideoCapture(0)
 
-orb = cv2.ORB_create(10)
+orb = cv2.ORB_create(50)
 matcher = cv2.DescriptorMatcher_create(cv2.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
