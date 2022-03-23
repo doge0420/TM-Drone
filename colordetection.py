@@ -8,6 +8,7 @@ def track(x):
     pass
 
 cv2.namedWindow("trackbar")
+
 # cv2.createTrackbar("low_h", "trackbar", 0, 180, track)    #par defaut
 # cv2.createTrackbar("low_s", "trackbar", 0, 255, track)
 # cv2.createTrackbar("low_v", "trackbar", 0, 255, track)
