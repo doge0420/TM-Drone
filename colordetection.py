@@ -1,6 +1,6 @@
-from turtle import color
 import cv2
 import numpy as np
+import getdirection
 
 video = cv2.VideoCapture(0)
 
@@ -53,3 +53,5 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord("q"):
         cv2.destroyAllWindows()
         break
+    
+getdirection.getpixel(mask, x, y, w, h)
