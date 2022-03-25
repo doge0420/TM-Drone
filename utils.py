@@ -17,12 +17,24 @@ import cv2
 #         print("./")
 
 def getcenter(corners):
-    x, y = corners[0]
-    c, d = corners[2]
+    a1, a2 = corners[0]
+    b1, b2 = corners[2]
     
-    print(x, y, c, d)
-    
-    m1 = int((c+x)/2)
-    m2 = int((d+y)/2)
+    m1 = int((a1+b1)/2)
+    m2 = int((a2+b2)/2)
     
     return m1, m2
+
+def getmid(corners):
+    a1, a2 = corners[0]
+    b1, b2 = corners[1]
+    c1, c2 = corners[2]
+    d1, d2 = corners[3]
+    
+    ab1 = int((a1+b1)/2)
+    ab2 = int((a2+b2)/2)
+    
+    cd1 = int((c1+d1)/2)
+    cd2 = int((c2+d2)/2)
+    
+    return (ab1, ab2), (cd1, cd2)
