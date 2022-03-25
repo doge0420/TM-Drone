@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import getdirection
+import utils
 
 video = cv2.VideoCapture(0)
 
@@ -43,13 +43,14 @@ while True:
     
     if len(contours) != 0:
         for contour in contours:
-            if cv2.contourArea(contour) > 300:      #pixels
-                x, y, w, h = cv2.boundingRect(contour)
-                cv2.circle(img, (int((2*x+w)/2), int((2*y+h)/2)), radius=10, color=(0,255,0), thickness=-1)
-                cv2.rectangle(img, (x,y), (x+w, y+h), (0,0,255), 3)
-                # print(f"position:{x,y}")
-                getdirection.getpixel(mask, x, y, w, h)
-    
+            if cv2.contourArea(contour) > 300:
+                rect = cv2.minAreaRect(contour)
+                box = cv2.boxPoints(rect)
+                box = np.int0(box)
+                cv2.drawContours(img, [box], 0, (0,0,255), 2)
+                x, y = utils.getcenter(box)
+                cv2.circle(img, (x, y), radius=5, color=(0,255,0), thickness=-1)
+
     cv2.imshow("mask", mask), cv2.imshow("image", img)
     
     if cv2.waitKey(1) & 0xFF == ord("q"):
