@@ -3,13 +3,14 @@ import numpy as np
 import utils
 from djitellopy import Tello
 from time import sleep
+from threading import Thread
 
 video = cv2.VideoCapture(0)
 
 color_state = 0
 color_sum = 2
 tello = None 
-test = False
+test = True
 
 cv2.namedWindow("trackbar")
 
@@ -50,7 +51,7 @@ def drone():
 
     print(f"Batterie: {tello.get_battery()}%")
     print(f"Temperature: {tello.get_highest_temperature(), tello.get_lowest_temperature()}C")
-
+    
 def main():
     global color_state
     global color_sum
@@ -59,12 +60,13 @@ def main():
     colorchange()
     if not test:
         drone()
-
+        
     while True:
         if test:
             _, img = video.read()
         elif not test:
-            img = tello.get_frame_read()
+            img = tello.get_frame_read().frame
+            img = cv2.resize(img, (650, 480))
         else:
             break
 
@@ -105,6 +107,8 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord("q"):
             if color_state == color_sum:
                 cv2.destroyAllWindows()
+                if not test:
+                    tello.end()
                 break
             else:
                 colorchange()
