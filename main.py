@@ -2,12 +2,14 @@ import cv2
 import numpy as np
 import utils
 from djitellopy import Tello
+from time import sleep
 
 video = cv2.VideoCapture(0)
 
 color_state = 0
 color_sum = 2
-tello = None
+tello = None 
+test = False
 
 cv2.namedWindow("trackbar")
 
@@ -39,7 +41,7 @@ def colorchange():
         print("rouge")
         color_state += 1
 
-def tello():
+def drone():
     global tello
     tello = Tello()
     tello.connect()
@@ -55,12 +57,16 @@ def main():
     global tello
     
     colorchange()
-    
+    if not test:
+        drone()
+
     while True:
-        try:
-            success, img = video.read()
-        except:
+        if test:
+            _, img = video.read()
+        elif not test:
             img = tello.get_frame_read()
+        else:
+            break
 
         image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         
@@ -76,7 +82,7 @@ def main():
         
         mask = cv2.inRange(image, lower, upper)
         
-        contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
         if len(contours) != 0:
             for contour in contours:
@@ -92,7 +98,7 @@ def main():
                     cv2.line(img, start, end, (0, 255, 0), 3)
                     cv2.drawContours(img, [box], 0, (0,0,255), 2)
                     cv2.circle(img, (x, y), radius=5, color=(0,255,0), thickness=-1)
-                    cv2.putText(img, str(round(angle)), (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 1)
+                    cv2.putText(img, str(round(angle)), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
 
         cv2.imshow("mask", mask), cv2.imshow("image", img)
         
@@ -102,6 +108,8 @@ def main():
                 break
             else:
                 colorchange()
+                print("sleeping 1s")
+                sleep(1)
 
 if __name__ == '__main__':
     main()
