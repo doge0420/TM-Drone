@@ -1,5 +1,3 @@
-import cv2
-
 # def getpixel(mask, x, y, w, h):
 #     if x or y or w or h == None:
 #         pass
