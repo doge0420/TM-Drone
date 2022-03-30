@@ -1,23 +1,18 @@
 import cv2
 import numpy as np
 import utils
+from djitellopy import Tello
 
 video = cv2.VideoCapture(0)
 
 color_state = 0
 color_sum = 2
-
-def empty(x):
-    pass
+tello = None
 
 cv2.namedWindow("trackbar")
 
-# cv2.createTrackbar("low_h", "trackbar", 0, 180, empty)    #par defaut
-# cv2.createTrackbar("low_s", "trackbar", 0, 255, empty)
-# cv2.createTrackbar("low_v", "trackbar", 0, 255, empty)
-# cv2.createTrackbar("hi_h", "trackbar", 180, 180, empty)
-# cv2.createTrackbar("hi_s", "trackbar", 255, 255, empty)
-# cv2.createTrackbar("hi_v", "trackbar", 255, 255, empty)
+def empty(x):
+    pass
 
 def colorchange():
     global color_state
@@ -44,14 +39,29 @@ def colorchange():
         print("rouge")
         color_state += 1
 
+def tello():
+    global tello
+    tello = Tello()
+    tello.connect()
+    tello.streamoff()
+    tello.streamon()
+
+    print(f"Batterie: {tello.get_battery()}%")
+    print(f"Temperature: {tello.get_highest_temperature(), tello.get_lowest_temperature()}C")
+
 def main():
     global color_state
     global color_sum
+    global tello
     
     colorchange()
     
     while True:
-        _, img = video.read()
+        try:
+            success, img = video.read()
+        except:
+            img = tello.get_frame_read()
+
         image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         
         low_h = cv2.getTrackbarPos("low_h", "trackbar")
