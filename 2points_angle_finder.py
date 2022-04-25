@@ -96,8 +96,17 @@ while True:
 
     # pour ne pas avoir une ligne si il y a qu'un objet
     if start and end != None:
-        cv2.line(img, start, end, (255,0,0), 3)
-
+        horizontal = (1000, start[1])
+        vertical = (start[0], -1000)
+        cv2.line(img, start, end, (255,0,0), 3)   # pour dessiner la ligne entre les objets
+        cv2.line(img, start, horizontal, (0,255,0), 2)  # pour dessiner l'axe horizontal
+        cv2.line(img, start, vertical, (0,255,0), 2)    #pour dessiner l'axe vertical
+        
+        angles = utils.get_angles(start, end)
+        
+        cv2.putText(img, f"angle horizontal: {str(angles[0])}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)    #text avec angle
+        cv2.putText(img, f"angle vertical: {str(angles[1])}", (50, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)      #text avec angle
+        
     cv2.imshow("mask", mask), cv2.imshow("image", img)
     
     if cv2.waitKey(1) & 0xFF == ord("q"):

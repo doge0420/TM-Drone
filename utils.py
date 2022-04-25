@@ -1,3 +1,7 @@
+from math import sqrt, acos, degrees
+
+from numpy import float16, float32
+
 # def getpixel(mask, x, y, w, h):
 #     if x or y or w or h == None:
 #         pass
@@ -36,3 +40,17 @@ def getmid(corners):
     cd2 = int((c2+d2)/2)
     
     return (ab1, ab2), (cd1, cd2)
+
+def get_angles(start, end):
+    
+    d1x = end[0]-start[0]
+    d1y = end[1]-start[1]
+    d2x = 1000-start[0]
+    d2y = 0
+    
+    d1x_2 = 0
+    d1y_2 = -1000-start[1]
+    d2x_2 = end[0]-start[0]
+    d2y_2 = end[1]-start[1]
+    
+    return float16(degrees(acos((d1x*d2x)/(sqrt(d1x ** 2+d1y ** 2)*sqrt(d2x ** 2+d2y ** 2))))), float16(degrees(acos((d1y_2*d2y_2)/(sqrt(d1x_2 ** 2+d1y_2 ** 2)*sqrt(d2x_2 ** 2+d2y_2 ** 2)))))
