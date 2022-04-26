@@ -68,6 +68,7 @@ def main():
             img = tello.get_frame_read().frame
             img = cv2.resize(img, (650, 480))
         else:
+            print("no video source detected. Exiting code")
             break
 
         image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
