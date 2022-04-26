@@ -1,5 +1,7 @@
 from math import sqrt, acos, degrees
+from turtle import distance
 from numpy import float16
+import statistics
 
 # pour avoir les coordonée du centre de la boite (n'est plus utile)
 def getcenter(corners):
@@ -42,14 +44,44 @@ def get_angles(start, end):
     return float16(degrees(acos((d1x*d2x)/(sqrt(d1x**2+d1y**2)*sqrt(d2x**2+d2y**2))))), float16(degrees(acos((d1y_2*d2y_2)/(sqrt(d1x_2**2+d1y_2**2)*sqrt(d2x_2**2+d2y_2**2)))))
 
 # pour avoir deux listes d'angles correspondant à leur axes et aussi la taille des listes
-def unpack(list_of_tuples: list):
+def unpack(tuple: tuple):
     angles_horiz = []
     angles_verti = []
-    lenght = len(list_of_tuples)
+    list_of_tuples = tuple[0]
+    distance = tuple[1]
+    length = len(list_of_tuples)
     
     for tuple in list_of_tuples:
         angle_1, angle_2 = tuple
         angles_horiz.append(angle_1)
         angles_verti.append(angle_2)
 
-    return angles_horiz, angles_verti, lenght
+    return angles_horiz, angles_verti, length, distance
+
+def get_two_points_distance(start, end):
+    d1 = end[0]-start[0]
+    d2 = end[1]-start[1]
+
+    distance = sqrt(d1**2+d2**2)
+
+    return distance
+
+def get_distance(box, distance_f):
+    a1, a2 = box[0]
+    b1, b2 = box[1]
+    c1, c2 = box[2]
+    d1, d2 = box[3]
+    
+    g1, g2 = c1-a1, c2-a2
+    d1, d2 = d1-b1, d2-b2
+    
+    g = sqrt(g1**2+g2**2)
+    d = sqrt(d1**2+d2**2)
+    
+    fake_distance = float16((g+d)/2)
+    real_distance = 5
+    
+    return (distance_f*real_distance)/fake_distance
+
+def get_median(list):
+    return statistics.median(list)
