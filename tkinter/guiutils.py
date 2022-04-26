@@ -1,28 +1,92 @@
 
 from tkinter import *
-def print_low_h(val):
+from colorutils import Color
+
+def Print_low_h(val):
     global low_h_value
-    low_h_value = val
-
-def print_low_s(val):
     global low_s_value
-    low_s_value = val
-
-def print_low_v(val):
     global low_v_value
-    low_v_value = val
-
-def print_high_h(val):
     global high_h_value
-    high_h_value = val
-
-def print_high_s(val):
     global high_s_value
-    high_s_value = val
-
-def print_high_v(val):
     global high_v_value
-    high_v_value = val
+    global low_canvas
+    global high_canvas
+    global low_preview
+    global high_preview
+    low_h_value = int(val)
+    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
+
+
+def Print_low_s(val):
+    global low_h_value
+    global low_s_value
+    global low_v_value
+    global high_h_value
+    global high_s_value
+    global high_v_value
+    global low_canvas
+    global high_canvas
+    global low_preview
+    global high_preview
+    low_s_value = int(val)
+    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
+
+
+def Print_low_v(val):
+    global low_h_value
+    global low_s_value
+    global low_v_value
+    global high_h_value
+    global high_s_value
+    global high_v_value
+    global low_canvas
+    global high_canvas
+    global low_preview
+    global high_preview
+    low_v_value = int(val)
+    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
+
+def Print_high_h(val):
+    global low_h_value
+    global low_s_value
+    global low_v_value
+    global high_h_value
+    global high_s_value
+    global high_v_value
+    global low_canvas
+    global high_canvas
+    global low_preview
+    global high_preview
+    high_h_value = int(val)
+    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
+
+def Print_high_s(val):
+    global low_h_value
+    global low_s_value
+    global low_v_value
+    global high_h_value
+    global high_s_value
+    global high_v_value
+    global low_canvas
+    global high_canvas
+    global low_preview
+    global high_preview
+    high_s_value = int(val)
+    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
+
+def Print_high_v(val):
+    global low_h_value
+    global low_s_value
+    global low_v_value
+    global high_h_value
+    global high_s_value
+    global high_v_value
+    global low_canvas
+    global high_canvas
+    global low_preview
+    global high_preview
+    high_v_value = int(val)
+    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
 
 def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_s_var,high_v_var,color_list, color_sum):
     global low_h_trackbar
@@ -31,10 +95,26 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
     global high_h_trackbar
     global high_s_trackbar
     global high_v_trackbar
+    global low_preview
+    global high_preview
+    global low_canvas
+    global high_canvas
     global isclosed
     global color_state
+    global low_h_value
+    global low_s_value
+    global low_v_value
+    global high_h_value
+    global high_s_value
+    global high_v_value
 
     color_state = 0
+    low_h_value = None
+    low_s_value = None
+    low_v_value = None
+    high_h_value = None
+    high_s_value = None
+    high_v_value = None
 
     menubar = Menu(window)
     filemenu = Menu(menubar, tearoff=0)
@@ -46,15 +126,18 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
     low_frame.pack()
     low_scale_frame = Frame(low_frame, bg = "#1170F6")
     low_scale_frame.pack(fill = BOTH, expand = True, side = LEFT)
-    low_color_frame = Frame(low_frame, bg = '#202DE6', height = 30, width = 30)
-    low_color_frame.pack(fill = BOTH, expand = True, side = RIGHT)
+    low_canvas = Canvas(low_frame, height = 70, width = 70)
+    low_canvas.pack(side = RIGHT)
+    low_preview = low_canvas.create_rectangle(0, 0, 70, 70, outline = "blue", fill = "blue")
 
     high_frame = Frame(window)
     high_frame.pack()
     high_scale_frame = Frame(high_frame, bg = "#D40B8A")
     high_scale_frame.pack(fill = BOTH, expand = True, side = LEFT)
-    high_color_frame = Frame(high_frame, bg = "#EA2829", height = 30, width = 30)
-    high_color_frame.pack(fill = BOTH, expand = True, side = RIGHT)
+    high_canvas = Canvas(high_frame, height = 70, width = 70)
+    high_canvas.pack(side = RIGHT)
+    high_preview = high_canvas.create_rectangle(0, 0, 70, 70, outline = "red", fill = "red")
+
 
 
     low_h_trackbar = Scale(
@@ -62,7 +145,8 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
         variable = low_h_var,
         orient = HORIZONTAL,
         to = 180,
-        command = print_low_h
+        command = Print_low_h,
+        length = 200
     )
     low_h_trackbar.pack(anchor=CENTER)
 
@@ -71,7 +155,8 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
         variable = low_s_var,
         orient = HORIZONTAL,
         to = 255,
-        command = print_low_s
+        command = Print_low_s,
+        length = 200
     )
     low_s_trackbar.pack(anchor=CENTER)
 
@@ -80,7 +165,8 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
         variable = low_v_var,
         orient = HORIZONTAL,
         to = 255,
-        command = print_low_v
+        command = Print_low_v,
+        length = 200
     )
     low_v_trackbar.pack(anchor=CENTER)
 
@@ -89,7 +175,8 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
         variable = high_h_var,
         orient = HORIZONTAL,
         to = 180,
-        command = print_high_h
+        command = Print_high_h,
+        length = 200
     )
     high_h_trackbar.pack(anchor=CENTER)
 
@@ -98,7 +185,8 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
         variable = high_s_var,
         orient = HORIZONTAL,
         to = 255,
-        command = print_high_s
+        command = Print_high_s,
+        length = 200
     )
     high_s_trackbar.pack(anchor=CENTER)
 
@@ -107,7 +195,8 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
         variable = high_v_var,
         orient = HORIZONTAL,
         to = 255,
-        command = print_high_v
+        command = Print_high_v,
+        length = 200
     )
     high_v_trackbar.pack(anchor=CENTER)
 
@@ -139,7 +228,6 @@ def UpdateColor(color_list, color_sum):
     current_color = color_list[color_state]
     color_state += 1
     SetValues(current_color)
-    print(color_state)
 
 def SetValues(current_color):
     global low_h_trackbar
@@ -174,5 +262,13 @@ def PrintValues():
 
 def GetValues():
     global current_values
-
     return current_values
+
+def HSVtoHEX(h_value, s_value, v_value):
+    HSV = Color(hsv=(float(h_value)*2, float(s_value)/255, float(v_value)/255))
+    HEX = HSV.hex
+    return HEX
+
+def UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value):
+    low_canvas.itemconfig(low_preview, outline=HSVtoHEX(low_h_value, low_s_value, low_v_value), fill=HSVtoHEX(low_h_value, low_s_value, low_v_value))
+    high_canvas.itemconfig(high_preview, outline=HSVtoHEX(high_h_value, high_s_value, high_v_value), fill=HSVtoHEX(high_h_value, high_s_value, high_v_value))
