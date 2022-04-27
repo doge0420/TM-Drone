@@ -6,8 +6,6 @@ from time import sleep
 from djitellopy import Tello
 import concurrent.futures
 
-video = cv2.VideoCapture(0)
-
 # fonction qui s'active quand les trackbars sont misent à jour (ne fait rien)
 def do_nothing(x):
     pass
@@ -24,11 +22,11 @@ def create_trackbars():
     cv2.createTrackbar("hi_v_1", "trackbar", 255, 255, do_nothing)
 
     cv2.createTrackbar("low_h_2", "trackbar", 0, 180, do_nothing)      #rouge
-    cv2.createTrackbar("low_s_2", "trackbar", 87, 255, do_nothing)
-    cv2.createTrackbar("low_v_2", "trackbar", 106, 255, do_nothing)
-    cv2.createTrackbar("hi_h_2", "trackbar", 4, 180, do_nothing)
-    cv2.createTrackbar("hi_s_2", "trackbar", 251, 255, do_nothing)
-    cv2.createTrackbar("hi_v_2", "trackbar", 146, 255, do_nothing)
+    cv2.createTrackbar("low_s_2", "trackbar", 151, 255, do_nothing)
+    cv2.createTrackbar("low_v_2", "trackbar", 114, 255, do_nothing)
+    cv2.createTrackbar("hi_h_2", "trackbar", 10, 180, do_nothing)
+    cv2.createTrackbar("hi_s_2", "trackbar", 227, 255, do_nothing)
+    cv2.createTrackbar("hi_v_2", "trackbar", 255, 255, do_nothing)
 
 # pour prendre les valeurs des trackbars et faire le masque (rouge)
 def blue_mask(image):
@@ -158,14 +156,17 @@ def check_angles(video):
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
             cv2.destroyAllWindows()
-            return angle_list, object_distance(contours_1, img, utils.get_median(distance_f_list))
+            return utils.unpack((angle_list, object_distance(contours_1, img, utils.get_median(distance_f_list))))
 
     cv2.destroyAllWindows()
-    return angle_list, object_distance(contours_1, img, utils.get_median(distance_f_list))
+    return utils.unpack((angle_list, object_distance(contours_1, img, utils.get_median(distance_f_list))))
 
 if __name__ == '__main__':
+    
+    video = cv2.VideoCapture(0)
+    
     # pour avoir les angles dans un autre thread
     with concurrent.futures.ThreadPoolExecutor() as executor:
         future = executor.submit(check_angles, video)
-    angle_1, angle_2, length, distance_v = utils.unpack(future.result())
+    angle_1, angle_2, length, distance_v = future.result()
     print(f"angle_1[degrés]: {round(utils.get_median(angle_1), 2)}  angle_2[degrés]: {round(utils.get_median(angle_2), 2)}  length: {length}  distance_v[cm]: {round(distance_v, 2)}")
