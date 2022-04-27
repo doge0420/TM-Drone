@@ -1,5 +1,6 @@
 from tkinter import *
 import guiutils
+import utils
 
 window = Tk()       #création de l'objet fenêtre
 
@@ -43,8 +44,8 @@ high_v_value = None
 
 #start
 
-guiutils.CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_s_var,high_v_var,color_list, color_sum)        #création de la fenêtre 
+# guiutils.CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_s_var,high_v_var,color_list, color_sum)        #création de la fenêtre 
+
+utils.init_window(window, color_list)
 
 window.mainloop()           #afficher la fenêtre jusqu'à sa fermeture
-
-

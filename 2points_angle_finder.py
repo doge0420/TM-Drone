@@ -24,11 +24,11 @@ def create_trackbars():
     cv2.createTrackbar("hi_v_1", "trackbar", 255, 255, do_nothing)
 
     cv2.createTrackbar("low_h_2", "trackbar", 0, 180, do_nothing)      #rouge
-    cv2.createTrackbar("low_s_2", "trackbar", 151, 255, do_nothing)
-    cv2.createTrackbar("low_v_2", "trackbar", 114, 255, do_nothing)
-    cv2.createTrackbar("hi_h_2", "trackbar", 10, 180, do_nothing)
-    cv2.createTrackbar("hi_s_2", "trackbar", 227, 255, do_nothing)
-    cv2.createTrackbar("hi_v_2", "trackbar", 255, 255, do_nothing)
+    cv2.createTrackbar("low_s_2", "trackbar", 87, 255, do_nothing)
+    cv2.createTrackbar("low_v_2", "trackbar", 106, 255, do_nothing)
+    cv2.createTrackbar("hi_h_2", "trackbar", 4, 180, do_nothing)
+    cv2.createTrackbar("hi_s_2", "trackbar", 251, 255, do_nothing)
+    cv2.createTrackbar("hi_v_2", "trackbar", 146, 255, do_nothing)
 
 # pour prendre les valeurs des trackbars et faire le masque (rouge)
 def blue_mask(image):

@@ -1,7 +1,5 @@
-
 from tkinter import *
 from colorutils import Color
-
 
 #les fonction prints_value sont les callbacks des trackbars qui servent a update les previews et garder les values à jour
 def Print_low_h(val):
@@ -18,7 +16,6 @@ def Print_low_h(val):
     low_h_value = int(val)
     UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
 
-
 def Print_low_s(val):
     global low_h_value
     global low_s_value
@@ -32,7 +29,6 @@ def Print_low_s(val):
     global high_preview
     low_s_value = int(val)
     UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
-
 
 def Print_low_v(val):
     global low_h_value
@@ -90,7 +86,6 @@ def Print_high_v(val):
     high_v_value = int(val)
     UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
 
-
 #cette fonction crée la fenetre avec tous les composants intégrés
 def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_s_var,high_v_var,color_list, color_sum):
     global low_h_trackbar
@@ -125,6 +120,7 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
     filemenu.add_command(label="Exit", command=lambda:Close(window))
     menubar.add_cascade(label="File", menu=filemenu)
     window.config(menu=menubar)
+    
 #création des deux frames qui organisent la disposition des trackbars et des previews
     low_frame = Frame(window)
     low_frame.pack()
@@ -224,6 +220,7 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
         expand = True
     )
     UpdateColor(color_list, color_sum)          #on appelle une première fois cette fonction pour initialiser la position des trackbars
+    
 #cette fonction est appelée au démarrage et lors de l'utilisation du bouton switch
 def UpdateColor(color_list, color_sum):
     global color_state 
@@ -231,7 +228,8 @@ def UpdateColor(color_list, color_sum):
     color_state = color_state % color_sum       #reste de la division par le nombre de couleurs (si 3 couleurs en tout et state =4, alors state devient 1)
     current_color = color_list[color_state]     #sélection de la bonne couleur de la color list que l'on stocke sous "current_color" en fonction du color_state
     color_state += 1                            #passage au prochain "state"
-    SetValues(current_color)                    #on set les valeurs de la nouvelles couleur sur les trackbars
+    SetValues(current_color) #on set les valeurs de la nouvelles couleur sur les trackbars
+    
 #fonction utilisée uniquement par l'intermédiaire du bouton switch 
 def SetValues(current_color):
     global low_h_trackbar
@@ -247,11 +245,13 @@ def SetValues(current_color):
     high_h_trackbar.set(current_color[3])
     high_s_trackbar.set(current_color[4])
     high_v_trackbar.set(current_color[5])
+    
 #fonction utilisée par le menu "exit"
 def Close(window):
     global isclosed
     window.destroy()
     isclosed = True     #pas encore utile mais pourra l'être afin d'effectuer des actions à la fin
+    
 #fonction utile pour debug uniquement
 def PrintValues():
     global current_values
@@ -263,16 +263,21 @@ def PrintValues():
     global high_v_value
     current_values = [low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value]
     print(current_values)
+    
 #fonction qui retourne une liste contenant les valeurs des trackbars au moment de l'appel de cette derniière
 def GetValues():
     global current_values
     return current_values
+
 #fonction qui prends en paramètres les 3 valeurs du code couleur HSV pour retourner le code hexadécimal (utile pour update les previews des couleurs)
 def HSVtoHEX(h_value, s_value, v_value):
     HSV = Color(hsv=(float(h_value)*2-1, float(s_value)/255, float(v_value)/255))
     HEX = HSV.hex
     return HEX
+
 #est appelée dans les callbacks du début du script et set les couleur des previews avec les codes HEX déduits des codes HSV
 def UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value):
     low_canvas.itemconfig(low_preview, outline=HSVtoHEX(low_h_value, low_s_value, low_v_value), fill=HSVtoHEX(low_h_value, low_s_value, low_v_value))
     high_canvas.itemconfig(high_preview, outline=HSVtoHEX(high_h_value, high_s_value, high_v_value), fill=HSVtoHEX(high_h_value, high_s_value, high_v_value))
+    
+# ///////////////////////////////////////////////////////////////////////
