@@ -32,10 +32,10 @@ def colorchange():
         color_state += 1
         
     elif color_state == 1:
-        cv2.createTrackbar("low_h", "trackbar", 0, 180, empty)    #rouge
+        cv2.createTrackbar("low_h", "trackbar", 170, 180, empty)    #rouge
         cv2.createTrackbar("low_s", "trackbar", 151, 255, empty)
         cv2.createTrackbar("low_v", "trackbar", 114, 255, empty)
-        cv2.createTrackbar("hi_h", "trackbar", 10, 180, empty)
+        cv2.createTrackbar("hi_h", "trackbar", 180, 180, empty)
         cv2.createTrackbar("hi_s", "trackbar", 227, 255, empty)
         cv2.createTrackbar("hi_v", "trackbar", 255, 255, empty)
         

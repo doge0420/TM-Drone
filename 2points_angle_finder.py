@@ -21,10 +21,10 @@ def create_trackbars():
     cv2.createTrackbar("hi_s_1", "trackbar", 255, 255, do_nothing)
     cv2.createTrackbar("hi_v_1", "trackbar", 255, 255, do_nothing)
 
-    cv2.createTrackbar("low_h_2", "trackbar", 0, 180, do_nothing)      #rouge
+    cv2.createTrackbar("low_h_2", "trackbar", 170, 180, do_nothing)      #rouge
     cv2.createTrackbar("low_s_2", "trackbar", 151, 255, do_nothing)
     cv2.createTrackbar("low_v_2", "trackbar", 114, 255, do_nothing)
-    cv2.createTrackbar("hi_h_2", "trackbar", 10, 180, do_nothing)
+    cv2.createTrackbar("hi_h_2", "trackbar", 180, 180, do_nothing)
     cv2.createTrackbar("hi_s_2", "trackbar", 227, 255, do_nothing)
     cv2.createTrackbar("hi_v_2", "trackbar", 255, 255, do_nothing)
 

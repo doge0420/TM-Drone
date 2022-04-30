@@ -1,127 +1,54 @@
 from tkinter import *
 from colorutils import Color
+import json
 
-#les fonction prints_value sont les callbacks des trackbars qui servent a update les previews et garder les values à jour
-def Print_low_h(val):
-    global low_h_value
-    global low_s_value
-    global low_v_value
-    global high_h_value
-    global high_s_value
-    global high_v_value
-    global low_canvas
-    global high_canvas
-    global low_preview
-    global high_preview
-    low_h_value = int(val)
-    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
+def import_colors(file_name: str):
+    with open(file_name, 'r') as json_file:
+        json_load = json.load(json_file)
+    json_file.close()
 
-def Print_low_s(val):
-    global low_h_value
-    global low_s_value
-    global low_v_value
-    global high_h_value
-    global high_s_value
-    global high_v_value
-    global low_canvas
-    global high_canvas
-    global low_preview
-    global high_preview
-    low_s_value = int(val)
-    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
+    color_list = []
+    for key in json_load.keys():
+        key = json_load[key]["low"]+json_load[key]["high"]
+        color_list.append(key)
 
-def Print_low_v(val):
-    global low_h_value
-    global low_s_value
-    global low_v_value
-    global high_h_value
-    global high_s_value
-    global high_v_value
-    global low_canvas
-    global high_canvas
-    global low_preview
-    global high_preview
-    low_v_value = int(val)
-    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
+    return color_list,len(color_list)
 
-def Print_high_h(val):
-    global low_h_value
-    global low_s_value
-    global low_v_value
-    global high_h_value
-    global high_s_value
-    global high_v_value
-    global low_canvas
-    global high_canvas
-    global low_preview
-    global high_preview
-    high_h_value = int(val)
-    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
-
-def Print_high_s(val):
-    global low_h_value
-    global low_s_value
-    global low_v_value
-    global high_h_value
-    global high_s_value
-    global high_v_value
-    global low_canvas
-    global high_canvas
-    global low_preview
-    global high_preview
-    high_s_value = int(val)
-    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
-
-def Print_high_v(val):
-    global low_h_value
-    global low_s_value
-    global low_v_value
-    global high_h_value
-    global high_s_value
-    global high_v_value
-    global low_canvas
-    global high_canvas
-    global low_preview
-    global high_preview
-    high_v_value = int(val)
-    UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value)
-
-#cette fonction crée la fenetre avec tous les composants intégrés
-def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_s_var,high_v_var,color_list, color_sum):
-    global low_h_trackbar
-    global low_s_trackbar
-    global low_v_trackbar
-    global high_h_trackbar
-    global high_s_trackbar
-    global high_v_trackbar
-    global low_preview
-    global high_preview
-    global low_canvas
-    global high_canvas
-    global isclosed
+def init_window():
+    global color_list_low
+    global color_list_high
+    global color_list
     global color_state
-    global low_h_value
-    global low_s_value
-    global low_v_value
-    global high_h_value
-    global high_s_value
-    global high_v_value
-#initialisations et déclaration des variables
+    global color_sum
+
+    window = Tk()       #création de l'objet fenêtre
+
+    window.title("Color management")    #titre de la fenêtre
+    window.geometry("600x600")          #dimensions de bases de la fenetre
+    window.minsize(600, 600)            #dimensions minimums de la fenêtre
+
+    
+    color_list,color_sum = import_colors("colorlist.json")
     color_state = 0
-    low_h_value = None
-    low_s_value = None
-    low_v_value = None
-    high_h_value = None
-    high_s_value = None
-    high_v_value = None
-#création du menu (pour quitter)
+    
+    #création du menu (pour quitter)
     menubar = Menu(window)
     filemenu = Menu(menubar, tearoff=0)
-    filemenu.add_command(label="Exit", command=lambda:Close(window))
+    filemenu.add_command(label="Exit", command=lambda:close(window))
     menubar.add_cascade(label="File", menu=filemenu)
     window.config(menu=menubar)
     
-#création des deux frames qui organisent la disposition des trackbars et des previews
+    color_list_low = [color_list[0][0], color_list[0][1], color_list[0][2]]
+    color_list_high = [color_list[0][3], color_list[0][4], color_list[0][5]]
+    
+    init_trackbars(window)
+    window.mainloop()           #afficher la fenêtre jusqu'à sa fermeture
+
+def intit_low_preview(window):
+    global low_preview
+    global low_canvas
+    
+    #création des deux frames qui organisent la disposition des trackbars et des previews
     low_frame = Frame(window)
     low_frame.pack()
     low_scale_frame = Frame(low_frame, bg = "#1170F6")
@@ -130,80 +57,100 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
     low_canvas.pack(side = RIGHT)
     low_preview = low_canvas.create_rectangle(0, 0, 70, 70)
 
+    return low_scale_frame
+
+def init_high_preview(window):
+    global high_preview
+    global high_canvas
+    
+    #création des deux frames qui organisent la disposition des trackbars et des previews
     high_frame = Frame(window)
     high_frame.pack()
     high_scale_frame = Frame(high_frame, bg = "#D40B8A")
     high_scale_frame.pack(fill = BOTH, expand = True, side = LEFT)
     high_canvas = Canvas(high_frame, height = 70, width = 70)
     high_canvas.pack(side = RIGHT)
-    high_preview = high_canvas.create_rectangle(0, 0, 70, 70) 
+    high_preview = high_canvas.create_rectangle(0, 0, 70, 70)
+    
+    return high_scale_frame
+    
+def init_trackbars(window):
+    global high_h_trackbar
+    global high_s_trackbar
+    global high_v_trackbar
+    global low_h_trackbar
+    global low_s_trackbar
+    global low_v_trackbar
 
-#création des trackbars 
-
-    low_h_trackbar = Scale(
-        low_scale_frame,        #destination
-        variable = low_h_var,   #variable associée (pas sur qu'elle soit utile)
-        orient = HORIZONTAL,    #oriantation
-        to = 180,               #valeur max
-        command = Print_low_h,  #callback
-        length = 200            #longueur graphique de la trackbar
-    )
-    low_h_trackbar.pack(anchor=CENTER)      #ajout graphique de la trackbar dans "window"
-
-    low_s_trackbar = Scale(
-        low_scale_frame,
-        variable = low_s_var,
-        orient = HORIZONTAL,
-        to = 255,
-        command = Print_low_s,
-        length = 200
-    )
-    low_s_trackbar.pack(anchor=CENTER)
-
-    low_v_trackbar = Scale(
-        low_scale_frame,
-        variable = low_v_var,
-        orient = HORIZONTAL,
-        to = 255,
-        command = Print_low_v,
-        length = 200
-    )
-    low_v_trackbar.pack(anchor=CENTER)
-
+    high_scale_frame = init_high_preview(window)
+    low_scale_frame = intit_low_preview(window)
+    
+    #création des trackbars 
     high_h_trackbar = Scale(
         high_scale_frame,
-        variable = high_h_var,
+        
         orient = HORIZONTAL,
         to = 180,
-        command = Print_high_h,
+        command = callback_high_1,
         length = 200
     )
     high_h_trackbar.pack(anchor=CENTER)
 
     high_s_trackbar = Scale(
         high_scale_frame,
-        variable = high_s_var,
+        
         orient = HORIZONTAL,
         to = 255,
-        command = Print_high_s,
+        command = callback_high_2,
         length = 200
     )
     high_s_trackbar.pack(anchor=CENTER)
 
     high_v_trackbar = Scale(
         high_scale_frame,
-        variable = high_v_var,
+
         orient = HORIZONTAL,
         to = 255,
-        command = Print_high_v,
+        command = callback_high_3,
         length = 200
     )
     high_v_trackbar.pack(anchor=CENTER)
-#création des deux boutons (switch et print)
+    
+    low_h_trackbar = Scale(
+        low_scale_frame,        #destination
+                                #variable associée (pas sur qu'elle soit utile)
+        orient = HORIZONTAL,    #oriantation
+        to = 180,               #valeur max
+        command = callback_low_1,  #callback
+        length = 200            #longueur graphique de la trackbar
+    )
+    low_h_trackbar.pack(anchor=CENTER)      #ajout graphique de la trackbar dans "window"
+
+    low_s_trackbar = Scale(
+        low_scale_frame,
+        
+        orient = HORIZONTAL,
+        to = 255,
+        command = callback_low_2,
+        length = 200
+    )
+    low_s_trackbar.pack(anchor=CENTER)
+
+    low_v_trackbar = Scale(
+        low_scale_frame,
+        
+        orient = HORIZONTAL,
+        to = 255,
+        command = callback_low_3,
+        length = 200
+    )
+    low_v_trackbar.pack(anchor=CENTER)
+    
+    #création des deux boutons (switch et print)
     switch_button = Button(
         window,                     #destination
         text = "switch color",      #texte visible
-        command = lambda:UpdateColor(color_list, color_sum)     #fonction du bouton
+        command = switch_color      #fonction du bouton
     )
     switch_button.pack(             #ajout graphique du bouton dans "window"
         side = BOTTOM,              #emplacement de destination
@@ -213,71 +160,94 @@ def CreateAdjustmentWindow(window,low_h_var,low_s_var,low_v_var,high_h_var,high_
     print_button = Button(
         window,
         text="print values",
-        command = PrintValues
+        command = print_values
     )
     print_button.pack(
         side = BOTTOM,
         expand = True
     )
-    UpdateColor(color_list, color_sum)          #on appelle une première fois cette fonction pour initialiser la position des trackbars
     
-#cette fonction est appelée au démarrage et lors de l'utilisation du bouton switch
-def UpdateColor(color_list, color_sum):
-    global color_state 
-
-    color_state = color_state % color_sum       #reste de la division par le nombre de couleurs (si 3 couleurs en tout et state =4, alors state devient 1)
-    current_color = color_list[color_state]     #sélection de la bonne couleur de la color list que l'on stocke sous "current_color" en fonction du color_state
-    color_state += 1                            #passage au prochain "state"
-    SetValues(current_color) #on set les valeurs de la nouvelles couleur sur les trackbars
+    low_h_trackbar.set(color_list_low[0])
+    low_s_trackbar.set(color_list_low[1])      
+    low_v_trackbar.set(color_list_low[2])
+    high_h_trackbar.set(color_list_high[0])
+    high_s_trackbar.set(color_list_high[1])
+    high_v_trackbar.set(color_list_high[2])
     
-#fonction utilisée uniquement par l'intermédiaire du bouton switch 
-def SetValues(current_color):
-    global low_h_trackbar
-    global low_s_trackbar
-    global low_v_trackbar
-    global high_h_trackbar
-    global high_s_trackbar
-    global high_v_trackbar
-
-    low_h_trackbar.set(current_color[0])        #on set toutes les trackbars avec les valeurs de la nouvelle couleur actuelle
-    low_s_trackbar.set(current_color[1])
-    low_v_trackbar.set(current_color[2])
-    high_h_trackbar.set(current_color[3])
-    high_s_trackbar.set(current_color[4])
-    high_v_trackbar.set(current_color[5])
-    
-#fonction utilisée par le menu "exit"
-def Close(window):
-    global isclosed
+def close(window):
     window.destroy()
-    isclosed = True     #pas encore utile mais pourra l'être afin d'effectuer des actions à la fin
-    
-#fonction utile pour debug uniquement
-def PrintValues():
-    global current_values
-    global low_h_value
-    global low_s_value
-    global low_v_value
-    global high_h_value
-    global high_s_value
-    global high_v_value
-    current_values = [low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value]
-    print(current_values)
-    
-#fonction qui retourne une liste contenant les valeurs des trackbars au moment de l'appel de cette derniière
-def GetValues():
-    global current_values
-    return current_values
 
-#fonction qui prends en paramètres les 3 valeurs du code couleur HSV pour retourner le code hexadécimal (utile pour update les previews des couleurs)
+def callback_low_1(value):
+    value_list_low(value, 0)
+    
+def callback_low_2(value):
+    value_list_low(value, 1)
+    
+def callback_low_3(value):
+    value_list_low(value, 2)
+        
+def value_list_low(value, index):
+    global color_list_low
+    
+    color_list_low[index] = value
+    
+    update_low_preview()
+
+def update_low_preview():
+    global color_list_low
+    global low_canvas
+    
+    color = HSVtoHEX(color_list_low[0], color_list_low[1], color_list_low[2])
+    low_canvas.itemconfig(low_preview, outline=color, fill=color)
+    
+def callback_high_1(value):
+    value_list_high(value, 0)
+    
+def callback_high_2(value):
+    value_list_high(value, 1)
+    
+def callback_high_3(value):
+    value_list_high(value, 2)
+        
+def value_list_high(value, index):
+    global color_list_high
+    
+    color_list_high[index] = value
+    
+    update_high_preview()
+    
+def update_high_preview():
+    global color_list_high
+    global high_canvas
+    
+    color = HSVtoHEX(color_list_high[0], color_list_high[1], color_list_high[2])
+    high_canvas.itemconfig(high_preview, outline=color, fill=color)
+    
 def HSVtoHEX(h_value, s_value, v_value):
     HSV = Color(hsv=(float(h_value)*2-1, float(s_value)/255, float(v_value)/255))
     HEX = HSV.hex
     return HEX
 
-#est appelée dans les callbacks du début du script et set les couleur des previews avec les codes HEX déduits des codes HSV
-def UpdatePreviewColor(low_canvas,high_canvas,low_preview,high_preview,low_h_value, low_s_value, low_v_value, high_h_value, high_s_value, high_v_value):
-    low_canvas.itemconfig(low_preview, outline=HSVtoHEX(low_h_value, low_s_value, low_v_value), fill=HSVtoHEX(low_h_value, low_s_value, low_v_value))
-    high_canvas.itemconfig(high_preview, outline=HSVtoHEX(high_h_value, high_s_value, high_v_value), fill=HSVtoHEX(high_h_value, high_s_value, high_v_value))
+def print_values():
+    global color_list_low
+    global color_list_high
     
-# ///////////////////////////////////////////////////////////////////////
+    print(f"high_list: {color_list_high}\nlow_list: {color_list_low}")
+    
+def switch_color():
+    global color_list
+    global color_state
+    global color_sum
+
+    color_state = color_state % color_sum
+    current_color = color_list[color_state]
+    color_state += 1
+    set_values(current_color)
+
+def set_values(current_color):
+    low_h_trackbar.set(current_color[0])
+    low_s_trackbar.set(current_color[1])      
+    low_v_trackbar.set(current_color[2])
+    high_h_trackbar.set(current_color[3])
+    high_s_trackbar.set(current_color[4])
+    high_v_trackbar.set(current_color[5])
