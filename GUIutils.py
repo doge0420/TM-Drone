@@ -1,6 +1,9 @@
+from cgi import test
 from tkinter import *
 from colorutils import Color
 import json
+import cv2
+import numpy as np
 
 def import_colors(file_name: str):
     with open(file_name, 'r') as json_file:
@@ -8,11 +11,16 @@ def import_colors(file_name: str):
     json_file.close()
 
     color_list = []
+    color_names = []
+    color_ids = []
     for key in json_load.keys():
+        color_names.append(key)
+        id = json_load[key]["id"]       #pas utile pour l'instant mais peut l'être dans le futur
+        color_ids.append(id)
         key = json_load[key]["low"]+json_load[key]["high"]
         color_list.append(key)
 
-    return color_list,len(color_list)
+    return color_list,len(color_list),color_names,color_ids
 
 def init_window():
     global color_list_low
@@ -20,6 +28,11 @@ def init_window():
     global color_list
     global color_state
     global color_sum
+    global color_names
+    global color_ids
+    global istest
+
+    istest = True
 
     window = Tk()       #création de l'objet fenêtre
 
@@ -27,14 +40,15 @@ def init_window():
     window.geometry("600x600")          #dimensions de bases de la fenetre
     window.minsize(600, 600)            #dimensions minimums de la fenêtre
 
+    tello = None
     
-    color_list,color_sum = import_colors("colorlist.json")
+    color_list,color_sum,color_names,color_ids = import_colors("colorlist.json")
     color_state = 0
     
     #création du menu (pour quitter)
     menubar = Menu(window)
     filemenu = Menu(menubar, tearoff=0)
-    filemenu.add_command(label="Exit", command=lambda:close(window))
+    filemenu.add_command(label="Exit", command=lambda:close(window,tello))
     menubar.add_cascade(label="File", menu=filemenu)
     window.config(menu=menubar)
     
@@ -82,8 +96,9 @@ def init_trackbars(window):
     global low_s_trackbar
     global low_v_trackbar
 
-    high_scale_frame = init_high_preview(window)
     low_scale_frame = intit_low_preview(window)
+    high_scale_frame = init_high_preview(window)
+
     
     #création des trackbars 
     high_h_trackbar = Scale(
@@ -147,16 +162,6 @@ def init_trackbars(window):
     low_v_trackbar.pack(anchor=CENTER)
     
     #création des deux boutons (switch et print)
-    switch_button = Button(
-        window,                     #destination
-        text = "switch color",      #texte visible
-        command = switch_color      #fonction du bouton
-    )
-    switch_button.pack(             #ajout graphique du bouton dans "window"
-        side = BOTTOM,              #emplacement de destination
-        expand = True               #prends le plus de place possible (pas collé au sol par exemple)
-    )
-
     print_button = Button(
         window,
         text="print values",
@@ -166,6 +171,29 @@ def init_trackbars(window):
         side = BOTTOM,
         expand = True
     )
+    #le bouton switch a été remplacé pas les boutons de couleur
+    # switch_button = Button(
+    #     window,                     #destination
+    #     text = "switch color",      #texte visible
+    #     command = switch_color      #fonction du bouton
+    # )
+    # switch_button.pack(             #ajout graphique du bouton dans "window"
+    #     side = BOTTOM,              #emplacement de destination
+    #     expand = True               #prends le plus de place possible (pas collé au sol par exemple)
+    # )
+
+    color_buttons_frame = Frame(window)
+    color_buttons_frame.pack(
+        side = BOTTOM,
+        expand = True
+    )
+#création des boutons de couleur
+    column_var = 0 
+    row_var = 0
+    for index in range(color_sum):
+        create_color_button(index,color_buttons_frame,row_var,column_var)
+        row_var += 1
+        column_var += 0.5
     
     low_h_trackbar.set(color_list_low[0])
     low_s_trackbar.set(color_list_low[1])      
@@ -174,8 +202,12 @@ def init_trackbars(window):
     high_s_trackbar.set(color_list_high[1])
     high_v_trackbar.set(color_list_high[2])
     
-def close(window):
+def close(window,tello):
+    global istest
     window.destroy()
+    cv2.destroyAllWindows()
+    if not istest:
+        tello.end()
 
 def callback_low_1(value):
     value_list_low(value, 0)
@@ -234,15 +266,15 @@ def print_values():
     
     print(f"high_list: {color_list_high}\nlow_list: {color_list_low}")
     
-def switch_color():
-    global color_list
-    global color_state
-    global color_sum
+# def switch_color():
+#     global color_list
+#     global color_state
+#     global color_sum
 
-    color_state = color_state % color_sum
-    current_color = color_list[color_state]
-    color_state += 1
-    set_values(current_color)
+#     color_state = color_state % color_sum
+#     current_color = color_list[color_state]
+#     color_state += 1
+#     set_values(current_color)
 
 def set_values(current_color):
     low_h_trackbar.set(current_color[0])
@@ -251,3 +283,35 @@ def set_values(current_color):
     high_h_trackbar.set(current_color[3])
     high_s_trackbar.set(current_color[4])
     high_v_trackbar.set(current_color[5])
+
+
+def get_values():
+    global color_list_low
+    global color_list_high
+    return color_list_low,color_list_high
+
+def create_color_button(index,color_buttons_frame,row_var,column_var):   
+    color_button = Button(
+        color_buttons_frame,
+        text = import_colors("colorlist.json")[2][index],
+        height = 2,
+        width = 10,
+        bg = HSVtoHEX(import_colors("colorlist.json")[0][index][3],import_colors("colorlist.json")[0][index][4],import_colors("colorlist.json")[0][index][5]),
+        command = lambda index=index:set_values(import_colors("colorlist.json")[0][index])
+        # command = print(import_colors("colorlist.json")[0][i])
+    )
+    row = row_var % 2
+    column = int(column_var)
+    color_button.grid(
+        column = column,
+        row = row,
+        padx = 10,
+        pady = 10
+        )
+
+def get_mask(image):
+    lower = np.array(get_values()[0])
+    upper = np.array(get_values()[1])
+    
+    return cv2.inRange(image, lower, upper)
+
