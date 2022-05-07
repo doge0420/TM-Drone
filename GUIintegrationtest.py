@@ -5,7 +5,7 @@ from DroneBlocksTelloSimulator.DroneBlocksSimulatorContextManager import DroneBl
 from time import sleep
 from djitellopy import Tello
 import concurrent.futures
-import GUIutils
+import code_pas_utile.GUIutils2 as GUIutils2
 
 
 # fonction qui s'active quand les trackbars sont misent à jour (ne fait rien)
@@ -38,14 +38,14 @@ def do_nothing(x):
     # hi_s_1 = cv2.getTrackbarPos("hi_s_1", "trackbar")
     # hi_v_1 = cv2.getTrackbarPos("hi_v_1", "trackbar")
 def first_mask(image,color1):
-    lower = np.array(GUIutils.getvalues()[0])
-    upper = np.array(GUIutils.getvalues()[1])
+    lower = np.array(GUIutils2.getvalues()[0])
+    upper = np.array(GUIutils2.getvalues()[1])
     
     return cv2.inRange(image, lower, upper)
 
 def second_mask(image,color2):
-    lower = np.array(GUIutils.getvalues()[0])
-    upper = np.array(GUIutils.getvalues()[1])
+    lower = np.array(GUIutils2.getvalues()[0])
+    upper = np.array(GUIutils2.getvalues()[1])
     
     return cv2.inRange(image, lower, upper)
 
@@ -119,7 +119,7 @@ def check_angles(video):
     distance_list = []
     distance_f_list = []
 
-    GUIutils.init_window()
+    GUIutils2.init_window()
 
     for i in range(100):     # capture x image
         _, img = video.read()
