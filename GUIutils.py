@@ -1,4 +1,3 @@
-from cgi import test
 from tkinter import *
 from colorutils import Color
 import json
@@ -30,9 +29,11 @@ def init_window():
     global color_sum
     global color_names
     global color_ids
-    global istest
+    global test
+    global status
 
-    istest = True
+    test = True
+    status = True
 
     window = Tk()       #création de l'objet fenêtre
 
@@ -54,7 +55,7 @@ def init_window():
     
     color_list_low = [color_list[0][0], color_list[0][1], color_list[0][2]]
     color_list_high = [color_list[0][3], color_list[0][4], color_list[0][5]]
-    
+
     init_trackbars(window)
     window.mainloop()           #afficher la fenêtre jusqu'à sa fermeture
 
@@ -203,11 +204,12 @@ def init_trackbars(window):
     high_v_trackbar.set(color_list_high[2])
     
 def close(window,tello):
-    global istest
+    global test
+    global status
     window.destroy()
-    cv2.destroyAllWindows()
-    if not istest:
+    if not test:
         tello.end()
+    status = False
 
 def callback_low_1(value):
     value_list_low(value, 0)
@@ -221,7 +223,7 @@ def callback_low_3(value):
 def value_list_low(value, index):
     global color_list_low
     
-    color_list_low[index] = value
+    color_list_low[index] = int(value)
     
     update_low_preview()
 
@@ -244,7 +246,7 @@ def callback_high_3(value):
 def value_list_high(value, index):
     global color_list_high
     
-    color_list_high[index] = value
+    color_list_high[index] = int(value)
     
     update_high_preview()
     
@@ -310,8 +312,13 @@ def create_color_button(index,color_buttons_frame,row_var,column_var):
         )
 
 def get_mask(image):
-    lower = np.array(get_values()[0])
-    upper = np.array(get_values()[1])
+    low, up = get_values()
+    
+    lower = np.array([low])
+    upper = np.array([up])
     
     return cv2.inRange(image, lower, upper)
 
+def get_status():
+    global status
+    return status

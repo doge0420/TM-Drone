@@ -1,4 +1,4 @@
 import GUIutils
 #start
 GUIutils.init_window()
-print(GUIutils.get_values()[0])
+print(GUIutils.get_values()[1])
