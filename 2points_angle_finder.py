@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import utils
 from DroneBlocksTelloSimulator.DroneBlocksSimulatorContextManager import DroneBlocksSimulatorContextManager
-from time import sleep
 from djitellopy import Tello
 import concurrent.futures
 
@@ -94,7 +93,7 @@ def draw_on_object_center(contours, img):
     else:
         pass
 
-def object_distance(contours, img, distance):
+def object_distance(contours, distance):
     if len(contours) != 0:
         for contour in contours:
             if cv2.contourArea(contour) > 350:
@@ -156,10 +155,10 @@ def check_angles(video):
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
             cv2.destroyAllWindows()
-            return utils.unpack((angle_list, object_distance(contours_1, img, utils.get_median(distance_f_list))))
+            return utils.unpack((angle_list, object_distance(contours_1, utils.get_median(distance_f_list))))
 
     cv2.destroyAllWindows()
-    return utils.unpack((angle_list, object_distance(contours_1, img, utils.get_median(distance_f_list))))
+    return utils.unpack((angle_list, object_distance(contours_1, utils.get_median(distance_f_list))))
 
 if __name__ == '__main__':
     

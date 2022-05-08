@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import utils
-import code_pas_utile.GUIutils2 as GUIutils2
 from threading import Thread
 from mask_window import color_window
 
@@ -10,12 +9,10 @@ video = cv2.VideoCapture(0)
 color_state = 0
 color_sum = 2
 
-
 def win_run():
     global window
     window = color_window()
     window.run()
-
 
 def main(video):
     global color_state
