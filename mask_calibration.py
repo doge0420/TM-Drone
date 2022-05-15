@@ -9,6 +9,7 @@ video = cv2.VideoCapture(0)
 color_state = 0
 color_sum = 2
 
+
 def win_run():
     global window
     window = color_window()
@@ -55,6 +56,7 @@ def main(video):
             cv2.destroyAllWindows()
             t.join()
             break
+
 
 if __name__ == '__main__':
     main(video)
