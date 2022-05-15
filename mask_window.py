@@ -4,7 +4,7 @@ import json
 import cv2
 import numpy as np
 
-class color_window():
+class color_window:
     def __init__(self):
         self.test = True
         self.status = True

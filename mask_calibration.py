@@ -15,7 +15,6 @@ def win_run():
     window = color_window()
     window.run()
 
-
 def main(video):
     global color_state
     global color_sum
@@ -57,6 +56,7 @@ def main(video):
             cv2.destroyAllWindows()
             t.join()
             break
+
 
 if __name__ == '__main__':
     main(video)
