@@ -17,7 +17,9 @@ class color_window():
 
         self.tello = None
         
-        self.color_list, self.color_sum, self.color_names, self.color_ids = self.__import_colors("colorlist.json")
+        self.default_color_list, self.default_color_sum, self.default_color_names = self.__import_colors("defaultcolorlist.json")
+        self.preset_color_list, self.preset_color_sum, self.preset_color_names = self.__import_colors("presetcolorlist.json")
+
         self.color_state = 0
         
         #création du menu (pour quitter)
@@ -27,8 +29,8 @@ class color_window():
         self.menubar.add_cascade(label="File", menu=self.filemenu)
         self.window.config(menu=self.menubar)
         
-        self.color_list_low = [self.color_list[0][0], self.color_list[0][1], self.color_list[0][2]]
-        self.color_list_high = [self.color_list[0][3], self.color_list[0][4], self.color_list[0][5]]
+        self.color_list_low = [self.default_color_list[0][0], self.default_color_list[0][1], self.default_color_list[0][2]]
+        self.color_list_high = [self.default_color_list[0][3], self.default_color_list[0][4], self.default_color_list[0][5]]
 
         self.__init_trackbars()
 
@@ -125,28 +127,60 @@ class color_window():
         self.low_v_trackbar.pack(anchor=CENTER)
         
         #création des deux boutons (switch et print)
-        self.print_button = Button(
+        print_button = Button(
             self.window,
             text="print values",
             command = self.__print_values
         )
-        self.print_button.pack(
+        print_button.pack(
             side = BOTTOM,
             expand = True
         )
 
-        color_buttons_frame = Frame(self.window)
-        color_buttons_frame.pack(
+        default_color_buttons_frame = Frame(self.window)
+        default_color_buttons_frame.pack(
             side = BOTTOM,
             expand = True
         )
     #création des boutons de couleur
         column_var = 0 
         row_var = 0
-        for index in range(self.color_sum):
-            self.__create_color_button(index,color_buttons_frame,row_var,column_var)
+        for index in range(self.default_color_sum):
+            self.__create_color_button(index,default_color_buttons_frame,row_var,column_var,"defaultcolorlist.json")
             row_var += 1
             column_var += 0.5
+
+        preset_frame = Frame(self.window)
+        preset_frame.pack(
+            side = BOTTOM,
+            expand = True
+        )
+
+        self.preset_entry = Entry(preset_frame, cursor = "spraycan")
+        self.preset_entry.pack(
+            side = LEFT   
+        )
+
+        preset_button = Button(
+            preset_frame,
+            text = "save preset :)",
+            command= self.__json_update
+            )
+        preset_button.pack(
+            side = RIGHT
+        )
+
+        preset_color_buttons_frame = Frame(self.window)
+        preset_color_buttons_frame.pack(
+            side = BOTTOM,
+            expand = True
+        )
+
+        for index in range(self.preset_color_sum):
+            self.__create_color_button(index,preset_color_buttons_frame,row_var,column_var,"presetcolorlist.json")
+            row_var += 1
+            column_var += 0.5
+
         
         self.low_h_trackbar.set(self.color_list_low[0])
         self.low_s_trackbar.set(self.color_list_low[1])      
@@ -216,9 +250,9 @@ class color_window():
     def __get_values(self):
         return self.color_list_low, self.color_list_high
     
-    def __create_color_button(self, index, color_buttons_frame, row_var, column_var): 
+    def __create_color_button(self, index, color_buttons_frame, row_var, column_var, filename: str): 
           
-        color_list, length, color_names, color_ids = self.__import_colors("colorlist.json")
+        color_list, _ , color_names = self.__import_colors(filename)
         
         color_button = Button(
             color_buttons_frame,
@@ -244,16 +278,30 @@ class color_window():
 
         color_list = []
         color_names = []
-        color_ids = []
+
         for key in json_load.keys():
             color_names.append(key)
-            id = json_load[key]["id"]       #pas utile pour l'instant mais peut l'être dans le futur
-            color_ids.append(id)
             key = json_load[key]["low"]+json_load[key]["high"]
             color_list.append(key)
 
-        return color_list, len(color_list), color_names, color_ids
-    
+        return color_list, len(color_list), color_names
+
+    def __json_update(self):
+        color_list_low, color_list_high = self.__get_values()
+        
+        preset = {"low": color_list_low, "high": color_list_high}
+
+        with open("presetcolorlist.json", "r+") as json_file:
+            json_load = json.load(json_file)
+            json_load[self.__get_entry()] = preset
+            print(json_load)
+            json_file.seek(0)
+            json.dump(json_load, json_file, indent=4)
+            json_file.close()
+        
+    def __get_entry(self):
+        return self.preset_entry.get()
+        
     def get_mask(self, image):
         low, up = self.__get_values()
         
