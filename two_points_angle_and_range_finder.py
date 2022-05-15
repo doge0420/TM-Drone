@@ -1,60 +1,55 @@
 import cv2
 import numpy as np
 import utils
-from DroneBlocksTelloSimulator.DroneBlocksSimulatorContextManager import DroneBlocksSimulatorContextManager
-from djitellopy import Tello
-import concurrent.futures
+import json
 
 class direction:
     def __init__(self, video):
-        self.video = video
-    
+        self.video = video  
+        self.import_mask("0")
+
     def do_nothing(self, x):
         pass
 
-    # création des trackbars
-    def create_trackbars(self):
-        cv2.namedWindow("trackbar")
+    def import_mask(self, cible):
+        with open("color_order.json", "r") as file:
+            json_file = json.load(file)
+            file.close()
+            json_file = json_file[cible]
+            self.first_colors = json_file["first"]
+            self.second_colors = json_file["second"]
 
-        cv2.createTrackbar("low_h_1", "trackbar", 110, 180, self.do_nothing)    #pour detecter le bleu
-        cv2.createTrackbar("low_s_1", "trackbar", 150, 255, self.do_nothing)
-        cv2.createTrackbar("low_v_1", "trackbar", 20, 255, self.do_nothing)
-        cv2.createTrackbar("hi_h_1", "trackbar", 130, 180, self.do_nothing)
-        cv2.createTrackbar("hi_s_1", "trackbar", 255, 255, self.do_nothing)
-        cv2.createTrackbar("hi_v_1", "trackbar", 255, 255, self.do_nothing)
+    def first_mask(self, image):
+        first_low = self.first_colors["low"]
+        first_high = self.first_colors["high"]
 
-        cv2.createTrackbar("low_h_2", "trackbar", 0, 180, self.do_nothing)      #rouge
-        cv2.createTrackbar("low_s_2", "trackbar", 143, 255, self.do_nothing)
-        cv2.createTrackbar("low_v_2", "trackbar", 102, 255, self.do_nothing)
-        cv2.createTrackbar("hi_h_2", "trackbar", 10, 180, self.do_nothing)
-        cv2.createTrackbar("hi_s_2", "trackbar", 255, 255, self.do_nothing)
-        cv2.createTrackbar("hi_v_2", "trackbar", 255, 255, self.do_nothing)
+        low_h = first_low[0]
+        low_s = first_low[1]
+        low_v = first_low[2]
 
-    # pour prendre les valeurs des trackbars et faire le masque (rouge)
-    def blue_mask(self, image):
-        low_h_1 = cv2.getTrackbarPos("low_h_1", "trackbar")
-        low_s_1 = cv2.getTrackbarPos("low_s_1", "trackbar")
-        low_v_1 = cv2.getTrackbarPos("low_v_1", "trackbar")
-        hi_h_1 = cv2.getTrackbarPos("hi_h_1", "trackbar")
-        hi_s_1 = cv2.getTrackbarPos("hi_s_1", "trackbar")
-        hi_v_1 = cv2.getTrackbarPos("hi_v_1", "trackbar")
-        
-        lower_1 = np.array([low_h_1, low_s_1, low_v_1])
-        upper_1 = np.array([hi_h_1, hi_s_1, hi_v_1])
+        hi_h = first_high[0]
+        hi_s = first_high[1]
+        hi_v = first_high[2]
+
+        lower_1 = np.array([low_h, low_s, low_v])
+        upper_1 = np.array([hi_h, hi_s, hi_v])
         
         return cv2.inRange(image, lower_1, upper_1)
 
-    # pour prendre les valeurs des trackbars et faire le masque (bleu)
-    def red_mask(self, image):
-        low_h_2 = cv2.getTrackbarPos("low_h_2", "trackbar")
-        low_s_2 = cv2.getTrackbarPos("low_s_2", "trackbar")
-        low_v_2 = cv2.getTrackbarPos("low_v_2", "trackbar")
-        hi_h_2 = cv2.getTrackbarPos("hi_h_2", "trackbar")
-        hi_s_2 = cv2.getTrackbarPos("hi_s_2", "trackbar")
-        hi_v_2 = cv2.getTrackbarPos("hi_v_2", "trackbar")
-        
-        lower_2 = np.array([low_h_2, low_s_2, low_v_2])
-        upper_2 = np.array([hi_h_2, hi_s_2, hi_v_2])
+    def second_mask(self, image):
+        second_low = self.second_colors["low"]
+        second_high = self.second_colors["high"]
+
+        low_h = second_low[0]
+        low_s = second_low[1]
+        low_v = second_low[2]
+
+        hi_h = second_high[0]
+        hi_s = second_high[1]
+        hi_v = second_high[2]
+
+        lower_2 = np.array([low_h, low_s, low_v])
+        upper_2 = np.array([hi_h, hi_s, hi_v])
         
         return cv2.inRange(image, lower_2, upper_2)
     
@@ -91,16 +86,14 @@ class direction:
         distance_list = []
         distance_f_list = []
 
-        self.create_trackbars()
-
         for i in range(100):     # capture x image
             _, img = self.video.read()
 
             image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
             # pour avoir les masques
-            mask_1 = self.blue_mask(image)
-            mask_2 = self.red_mask(image)
+            mask_1 = self.first_mask(image)
+            mask_2 = self.second_mask(image)
 
             # trouver les objets de différentes couleurs
             contours_1, _ = cv2.findContours(mask_1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
