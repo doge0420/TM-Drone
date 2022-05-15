@@ -1,5 +1,4 @@
-from math import sqrt, acos, degrees
-from turtle import distance
+from math import cos, sqrt, acos, degrees, sin
 from numpy import float16
 import statistics
 
@@ -79,9 +78,30 @@ def get_distance(box, distance_f):
     d = sqrt(d1**2+d2**2)
     
     fake_distance = float16((g+d)/2)
-    real_distance = 5
+    real_distance = 5 #cm
     
     return (distance_f*real_distance)/fake_distance
 
 def get_median(list):
     return statistics.median(list)
+
+def find_target_position(angle_vert, angle_hori, distance):
+    if angle_hori > 90:
+        angle = 180-angle_hori
+        
+    X_distance = sin(angle)*distance
+    Y_distance = cos(angle)*distance
+    
+    if angle_hori < 90:
+        if angle_vert < 90:
+            pass
+        else:
+            Y_distance = -Y_distance
+    else:
+        if angle_vert < 90:
+            X_distance = -X_distance
+        else:
+            X_distance = -X_distance
+            Y_distance = -Y_distance
+            
+    return X_distance, Y_distance
