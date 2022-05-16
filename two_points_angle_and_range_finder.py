@@ -67,7 +67,7 @@ class direction:
                     return x, y
         else:
             pass
-        
+    #trouver la vraie distance entre le deux objets    
     def object_distance(self, contours, distance):
         if len(contours) != 0:
             for contour in contours:

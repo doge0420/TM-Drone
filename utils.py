@@ -84,7 +84,7 @@ def get_distance(box, distance_f):
 
 def get_median(list):
     return statistics.median(list)
-
+#return les composantes en [cm]
 def find_target_position(angle_vert, angle_hori, distance):
     if angle_hori > 90:
         angle = 180-angle_hori
