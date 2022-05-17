@@ -10,7 +10,7 @@ class direction:
 
     # ouvre color_order.json pour obtenir les ranges de couleurs dans l'ordre du parcours
     def import_mask(self, cible):
-        with open("color_order.json", "r") as file:
+        with open("./color_json/color_order.json", "r") as file:
             json_file = json.load(file)
             file.close()
             json_file = json_file[cible]

@@ -17,8 +17,8 @@ class color_window:
 
         self.tello = None
         
-        self.default_color_list, self.default_color_sum, self.default_color_names = self.__import_colors("defaultcolorlist.json")
-        self.preset_color_list, self.preset_color_sum, self.preset_color_names = self.__import_colors("presetcolorlist.json")
+        self.default_color_list, self.default_color_sum, self.default_color_names = self.__import_colors("./color_json/defaultcolorlist.json")
+        self.preset_color_list, self.preset_color_sum, self.preset_color_names = self.__import_colors("./color_json/presetcolorlist.json")
 
         self.color_state = 0
         
@@ -149,7 +149,7 @@ class color_window:
         column_var = 0 
         row_var = 0
         for index in range(self.default_color_sum):
-            self.__create_color_button(index,default_color_buttons_frame,row_var,column_var,"defaultcolorlist.json")
+            self.__create_color_button(index,default_color_buttons_frame,row_var,column_var,"./color_json/defaultcolorlist.json")
             row_var += 1
             column_var += 0.5
 
@@ -180,7 +180,7 @@ class color_window:
         )
 
         for index in range(self.preset_color_sum):
-            self.__create_color_button(index,preset_color_buttons_frame,row_var,column_var,"presetcolorlist.json")
+            self.__create_color_button(index,preset_color_buttons_frame,row_var,column_var,"./color_json/presetcolorlist.json")
             row_var += 1
             column_var += 0.5
 
@@ -305,7 +305,7 @@ class color_window:
         
         preset = {"low": color_list_low, "high": color_list_high}
 
-        with open("presetcolorlist.json", "r+") as json_file:
+        with open("./color_json/presetcolorlist.json", "r+") as json_file:
             json_load = json.load(json_file)
             json_load[self.__get_entry()] = preset
             print(json_load)
