@@ -9,7 +9,7 @@
 # print(f"angle_1[degrés]: {round(utils.get_median(angle_1), 2)}  angle_2[degrés]: {round(utils.get_median(angle_2), 2)}  length: {length}  distance_v[cm]: {round(distance_v, 2)}")
 
 import json
-
+ 
 preset = {"low": "color_list_low", "high": "coesfflor_list_high"}
 
 with open("presetcolorlist.json", "r+") as json_file:
