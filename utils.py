@@ -1,4 +1,4 @@
-from math import cos, sqrt, acos, degrees, sin
+from math import sqrt, acos, degrees
 from numpy import float16
 import statistics
 
@@ -57,6 +57,7 @@ def unpack(tuple: tuple):
 
     return angles_horiz, angles_verti, length, distance
 
+# pour avoir la distance entre deux points
 def get_two_points_distance(start, end):
     d1 = end[0]-start[0]
     d2 = end[1]-start[1]
@@ -65,6 +66,7 @@ def get_two_points_distance(start, end):
 
     return distance
 
+# pour avoir la vraie distance entre les deux objets de couleur [cm] avec les cotés verticaux de l'objet de ref
 def get_distance(box, distance_f):
     a1, a2 = box[0]
     b1, b2 = box[1]
@@ -77,31 +79,11 @@ def get_distance(box, distance_f):
     g = sqrt(g1**2+g2**2)
     d = sqrt(d1**2+d2**2)
     
-    fake_distance = float16((g+d)/2)
-    real_distance = 5 #cm
+    vert_side_measured_average = float16((g+d)/2)
+    vert_side_real_size = 5 #cm
     
-    return (distance_f*real_distance)/fake_distance
+    return (distance_f*vert_side_real_size)/vert_side_measured_average
 
+# pour avoir la mediane d'une liste
 def get_median(list):
     return statistics.median(list)
-
-def find_target_position(angle_vert, angle_hori, distance):
-    if angle_hori > 90:
-        angle = 180-angle_hori
-        
-    X_distance = sin(angle)*distance
-    Y_distance = cos(angle)*distance
-    
-    if angle_hori < 90:
-        if angle_vert < 90:
-            pass
-        else:
-            Y_distance = -Y_distance
-    else:
-        if angle_vert < 90:
-            X_distance = -X_distance
-        else:
-            X_distance = -X_distance
-            Y_distance = -Y_distance
-            
-    return X_distance, Y_distance

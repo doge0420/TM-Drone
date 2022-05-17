@@ -34,6 +34,7 @@ class color_window:
 
         self.__init_trackbars()
 
+    # initialisation du rectangle du bas
     def __init_low_preview(self):
         
         #création des deux frames qui organisent la disposition des trackbars et des previews
@@ -47,6 +48,7 @@ class color_window:
 
         return low_scale_frame
     
+    # initialisation du rectangle du haut
     def __init_high_preview(self):
         
         #création des deux frames qui organisent la disposition des trackbars et des previews
@@ -60,6 +62,7 @@ class color_window:
         
         return high_scale_frame
     
+    # initialisation des sliders ainsi que des bouttons sur le GUI
     def __init_trackbars(self):
 
         low_scale_frame = self.__init_low_preview()
@@ -189,6 +192,7 @@ class color_window:
         self.high_s_trackbar.set(self.color_list_high[1])
         self.high_v_trackbar.set(self.color_list_high[2])
         
+    # pour fermer la fenetre
     def close(self):
         self.window.destroy()
         self.status = False
@@ -202,11 +206,13 @@ class color_window:
     def __callback_low_3(self, value):
         self.__value_list_low(value, 2)
             
+    # pour accéder et actualiser les valeurs hsv
     def __value_list_low(self, value, index):
         
         self.color_list_low[index] = int(value)
         self.__update_low_preview()
 
+    # pour actualiser le rectangle d'apercu du bas
     def __update_low_preview(self):
 
         color = self.__HSVtoHEX(self.color_list_low[0], self.color_list_low[1], self.color_list_low[2])
@@ -220,25 +226,29 @@ class color_window:
         
     def __callback_high_3(self, value):
         self.__value_list_high(value, 2)
-            
+          
+    # pour accéder et actualiser les valeurs hsv
     def __value_list_high(self, value, index):
         
         self.color_list_high[index] = int(value)
         self.__update_high_preview()
         
+    # pour actualiser le rectangle d'apercu du haut
     def __update_high_preview(self):
 
         color = self.__HSVtoHEX(self.color_list_high[0], self.color_list_high[1], self.color_list_high[2])
         self.high_canvas.itemconfig(self.high_preview, outline=color, fill=color)
-        
+       
+    # pour convertir les valeurs hsv en hex 
     def __HSVtoHEX(self, h_value, s_value, v_value):
         HSV = Color(hsv=(float(h_value)*2-1, float(s_value)/255, float(v_value)/255))
-        HEX = HSV.hex
-        return HEX
+        hexa = HSV.hex
+        return hexa
 
     def __print_values(self):
         print(f"high_list: {self.color_list_high}\nlow_list: {self.color_list_low}")
-        
+    
+    # utilisé pour actualiser les sliders quand on clique sur une couleur
     def __set_values(self, current_color):
         self.low_h_trackbar.set(current_color[0])
         self.low_s_trackbar.set(current_color[1])      
@@ -247,9 +257,11 @@ class color_window:
         self.high_s_trackbar.set(current_color[4])
         self.high_v_trackbar.set(current_color[5])
 
+    # getter function pour obtenir les valeurs de masque actuels
     def __get_values(self):
         return self.color_list_low, self.color_list_high
     
+    # utilisé pour créer les bouttons de couleur et pour les bouttons de preset
     def __create_color_button(self, index, color_buttons_frame, row_var, column_var, filename: str): 
           
         color_list, _ , color_names = self.__import_colors(filename)
@@ -271,6 +283,7 @@ class color_window:
             pady = 10
             )
         
+    # pour importer les valeurs hsv depuis un json
     def __import_colors(self, file_name: str):
         with open(file_name, 'r') as json_file:
             json_load = json.load(json_file)
@@ -286,6 +299,7 @@ class color_window:
 
         return color_list, len(color_list), color_names
 
+    # pour sauvegarder un preset dans un fichier json
     def __json_update(self):
         color_list_low, color_list_high = self.__get_values()
         
@@ -299,9 +313,11 @@ class color_window:
             json.dump(json_load, json_file, indent=4)
             json_file.close()
         
+    # pour obtenir le texte du champ d'entré
     def __get_entry(self):
         return self.preset_entry.get()
         
+    # pour obtenir le masque avec les valeurs hsv
     def get_mask(self, image):
         low, up = self.__get_values()
         
@@ -310,8 +326,10 @@ class color_window:
         
         return cv2.inRange(image, lower, upper)
 
+    # pour savoir si la fenetre est ouverte ou fermée
     def get_status(self):
         return self.status
     
+    # pour afficher la fenetre
     def run(self):
         self.window.mainloop()           #afficher la fenêtre jusqu'à sa fermeture 
