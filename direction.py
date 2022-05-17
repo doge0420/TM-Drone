@@ -3,7 +3,7 @@ import numpy as np
 import utils
 import json
 
-class direction:
+class Direction:
     def __init__(self, video):
         self.video = video  
         self.import_mask("0")

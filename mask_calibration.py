@@ -1,18 +1,16 @@
 import cv2
 import numpy as np
-import utils
 from threading import Thread
-from mask_window import color_window
+from mask_window import Color_window
 
 video = cv2.VideoCapture(0)
 
 color_state = 0
 color_sum = 2
 
-
 def win_run():
     global window
-    window = color_window()
+    window = Color_window()
     window.run()
 
 def main(video):
@@ -46,7 +44,6 @@ def main(video):
             cv2.destroyAllWindows()
             t.join()
             break
-
 
 if __name__ == '__main__':
     main(video)

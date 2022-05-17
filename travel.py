@@ -1,6 +1,6 @@
 from math import sin, cos
 
-class travel():
+class Travel:
     def __init__(self, drone):
         self.drone = drone
     
