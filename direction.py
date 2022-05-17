@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import utils
-import json
 
 class Direction:
     def __init__(self, video):
@@ -9,13 +8,8 @@ class Direction:
         self.import_mask("0")
 
     # ouvre color_order.json pour obtenir les ranges de couleurs dans l'ordre du parcours
-    def import_mask(self, cible):
-        with open("./color_json/color_order.json", "r") as file:
-            json_file = json.load(file)
-            file.close()
-            json_file = json_file[cible]
-            self.first_colors = json_file["first"]
-            self.second_colors = json_file["second"]
+    def import_mask(self, cible: str):
+        self.first_colors, self.second_colors, _ = utils.import_mask(cible)
 
     # crée le masque pour le premier objet
     def first_mask(self, image):
@@ -53,8 +47,8 @@ class Direction:
         
         return cv2.inRange(image, lower_2, upper_2)
     
-    # pour trouver le centre d'un objet et dessiner les contours et le centre
-    def draw_on_object_center(self, contours, img):
+    # pour dessiner les contours et trouver le centre de l'objet
+    def draw_on_object_and_find_center(self, contours, img):
         if len(contours) != 0:
             for contour in contours:
                 if cv2.contourArea(contour) > 350:
@@ -72,7 +66,7 @@ class Direction:
     def object_distance(self, contours, distance):
         if len(contours) != 0:
             for contour in contours:
-                if cv2.contourArea(contour) > 350:
+                if cv2.contourArea(contour) > 400:
                     rect = cv2.minAreaRect(contour)
                     box = cv2.boxPoints(rect)
                     box = np.int0(box)
@@ -104,8 +98,8 @@ class Direction:
             mask = mask_1 | mask_2
 
             # définition des point de départ et d'arrivée de la ligne entre les deux objets
-            start = self.draw_on_object_center(contours_1, img)
-            end = self.draw_on_object_center(contours_2, img)
+            start = self.draw_on_object_and_find_center(contours_1, img)
+            end = self.draw_on_object_and_find_center(contours_2, img)
 
             # pour ne pas avoir de ligne s'il n'y a qu'un objet détécté
             if start and end != None:

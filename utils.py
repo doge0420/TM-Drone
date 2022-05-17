@@ -1,6 +1,7 @@
 from math import sqrt, acos, degrees
 from numpy import float16
 import statistics
+import json
 
 # pour avoir les coordonée du centre de la boite (n'est plus utile)
 def getcenter(corners):
@@ -87,3 +88,14 @@ def get_distance(box, distance_f):
 # pour avoir la mediane d'une liste
 def get_median(list):
     return statistics.median(list)
+
+def import_mask(cible):
+    with open("./color_json/color_order.json", "r") as file:
+            json_file = json.load(file)
+            file.close()
+            json_file = json_file[cible]
+            first_colors = json_file["first"]
+            second_colors = json_file["second"]
+            target_colors = json_file["target"]
+            
+            return first_colors, second_colors, target_colors
