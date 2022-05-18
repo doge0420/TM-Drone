@@ -2,6 +2,7 @@ from djitellopy import Tello
 import cv2
 from direction import Direction
 from travel import Travel
+from alignement import Alignement
 
 if __name__ == '__main__':
     cible = 0
