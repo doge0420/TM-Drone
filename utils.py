@@ -89,7 +89,7 @@ def get_distance(box, distance_f):
 def get_median(list):
     return statistics.median(list)
 
-def import_mask(cible):
+def import_mask_color(cible):
     with open("./color_json/color_order.json", "r") as file:
             json_file = json.load(file)
             file.close()

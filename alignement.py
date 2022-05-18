@@ -9,12 +9,12 @@ class Alignement:
         self.width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.center = int(self.width/2), int(self.height/2)
-        self.import_mask("0")
+        self.import_mask_color("0")
 
-    def import_mask(self, cible: str):
-        _, _, self.target_color = utils.import_mask(cible)
+    def import_mask_color(self, cible: str):
+        _, _, self.target_color = utils.import_mask_color(cible)
 
-    def mask(self, image):
+    def __mask(self, image):
         low = self.target_color["low"]
         high = self.target_color["high"]
         
@@ -32,7 +32,7 @@ class Alignement:
         return cv2.inRange(image, lower_2, upper_2)
     
     # pour trouver le centre d'un objet et dessiner les contours
-    def draw_on_object_and_find_center(self, contours, img):
+    def __draw_on_object_and_find_center(self, contours, img):
         if len(contours) != 0:
             for contour in contours:
                 if cv2.contourArea(contour) > 400:
@@ -46,13 +46,13 @@ class Alignement:
         else:
             pass
     
-    def draw_center(self, image):
+    def __draw_center(self, image):
         cv2.circle(image, self.center, radius=5, color=(0, 0, 255), thickness=-1)
     
-    def draw_line(self, image, object):
+    def __draw_line(self, image, object):
         cv2.line(image, self.center, object, color=(0, 0, 255), thickness=2)
         
-    def draw_grid(self, image):
+    def __draw_grid(self, image):
         up_left = (int(self.width/3), 0)
         up_right = (int(2*self.width/3), 0)
         down_left = (int(self.width/3), self.height)
@@ -62,12 +62,29 @@ class Alignement:
         left_down = (0, int(2*self.height/3))
         right_up = (self.width, int(self.height/3))
         right_down = (self.width, int(2*self.height/3))
-    
+
         cv2.line(image, up_left, down_left, color=(255, 230, 0), thickness=2)
         cv2.line(image, up_right, down_right, color=(255, 230, 0), thickness=2)
         cv2.line(image, left_up, right_up, color=(255, 230, 0), thickness=2)
         cv2.line(image, left_down, right_down, color=(255, 230, 0), thickness=2)
     
+    def __set_roi(self, image):
+        # [a,b,c
+        #  d,e,f
+        #  g,h,i]
+        
+        a = image[0:int(self.height/3), 0:int(self.width/3)]
+        b = image[0:int(self.height/3), int(self.width/3):int(2*self.width/3)]
+        c = image[0:int(self.height/3), int(2*self.width/3):self.width]
+        d = image[int(self.height/3):int(2*self.height/3), 0:int(self.width/3)]
+        e = image[int(self.height/3):int(2*self.height/3), int(self.width/3):int(2*self.width/3)]
+        f = image[int(self.height/3):int(2*self.height/3), int(2*self.width/3):self.width]
+        g = image[int(2*self.height/3):self.height, 0:int(self.width/3)]
+        h = image[int(2*self.height/3):self.height, int(self.width/3):int(2*self.width/3)]
+        i = image[int(2*self.height/3):self.height, int(2*self.width/3):self.width]
+        
+        
+        
     def align(self):
 
         while True:
@@ -75,17 +92,17 @@ class Alignement:
             image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
             # pour avoir les masques
-            mask = self.mask(image)
+            mask = self.__mask(image)
 
-            self.draw_grid(img)
+            self.__draw_grid(img)
 
             # trouver les objets de différentes couleurs
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            object = self.draw_on_object_and_find_center(contours, img)
+            object = self.__draw_on_object_and_find_center(contours, img)
         
             if object != None:
-                self.draw_center(img)
-                self.draw_line(img, object)
+                self.__draw_center(img)
+                self.__draw_line(img, object)
         
             # affichage de la caméra et du masque
             cv2.imshow("mask", mask), cv2.imshow("image", img) 
