@@ -28,7 +28,7 @@ class Travel:
         return X_distance, Y_distance
             
     # pour faire bouger le drone devant la cible
-    def move_to_target(self, angle_vert, angle_hori, distance):
+    def move_to_target(self, angle_hori, angle_vert, distance):
         x, y = self.__find_target_position(angle_vert, angle_hori, distance)
         
         if x < 0 and y < 0:
