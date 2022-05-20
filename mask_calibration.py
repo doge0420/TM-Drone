@@ -27,8 +27,7 @@ def main(video):
         image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         mask = window.get_mask(image)
 
-        contours, _ = cv2.findContours(
-            mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         if len(contours) != 0:
             for contour in contours:

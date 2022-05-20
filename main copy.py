@@ -24,19 +24,19 @@ def main():
 
         #direction
         Track_window.update_status(track_window, "Checking target position...")
-        Direction.import_mask_color(cible)
+        # Direction.import_mask_color(cible)
 
-        #travel
-        Track_window.update_status(track_window, "Traveling to the next target...")
-        angle_hori, angle_vert, length, distance = Direction.check_angles()
-        print(length)
-        Travel.move_to_target(angle_hori, angle_vert, distance)
+        # #travel
+        # Track_window.update_status(track_window, "Traveling to the next target...")
+        # angle_hori, angle_vert, length, distance = Direction.check_angles()
+        # print(length)
+        # Travel.move_to_target(angle_hori, angle_vert, distance)
 
-        # alignement
-        Track_window.update_status(track_window, "Alignment with the target...")
+        # # alignement
+        # Track_window.update_status(track_window, "Alignment with the target...")
 
-        # travel
-        Track_window.update_status(track_window, "Passing through the target...")
+        # # travel
+        # Track_window.update_status(track_window, "Passing through the target...")
 
         cible += 1
         if cible == 5:

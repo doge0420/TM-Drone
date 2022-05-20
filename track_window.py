@@ -31,12 +31,11 @@ class Track_window:
 
         self.__init_window_content()
 
-        self.window.mainloop()
 
     def __init_window_content(self):
         self.step_frame = Frame(self.window)
         self.step_frame.pack()
-        self.step_label = Label(self.step_frame, text = "current step: 0")
+        self.step_label = Label(self.step_frame, text = "current step: -")
         self.step_label.pack()
 
         trashbutton = Button(self.window, command=self.next_step, text = "next step")
@@ -49,16 +48,17 @@ class Track_window:
 
     def next_step(self):
         self.current_step += 1
-        self.__update_current_step()
+        self.update_current_step(self.current_step)
 
-    def update_current_step(self, cible):
+    def update_current_step(self, cible:int):
         self.step_label['text'] = f"current step: {cible}"
 
     def update_status(self,text:str):
         self.status_label['text'] = text
 
-    def __run(self):
+    def run(self):
         self.window.mainloop()
 
-track = Track_window()
-
+if __name__ == "__main__":
+    t = Track_window()
+    t.run()
