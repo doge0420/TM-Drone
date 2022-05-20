@@ -21,6 +21,7 @@ def main(video):
     t = Thread(target=win_run)
 
     t.start()
+    
     while True:
         _, img = video.read()
 

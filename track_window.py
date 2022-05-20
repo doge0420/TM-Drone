@@ -3,8 +3,9 @@ from colorutils import Color
 import json
 import cv2
 import numpy as np
+from threading import Thread
 
-class Track_window:
+class track_window:
     def __init__(self):
         self.test = True
         self.status = True
@@ -31,6 +32,7 @@ class Track_window:
 
         self.__init_window_content()
 
+        # self.window.mainloop()
 
     def __init_window_content(self):
         self.step_frame = Frame(self.window)
@@ -60,5 +62,9 @@ class Track_window:
         self.window.mainloop()
 
 if __name__ == "__main__":
-    t = Track_window()
-    t.run()
+    
+    win = track_window()
+    
+    win.update_status("ok")
+    
+    win.run()

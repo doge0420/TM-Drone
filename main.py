@@ -1,47 +1,44 @@
 from djitellopy import Tello
 import cv2
-from threading import Thread
 from direction import Direction
 from travel import Travel
 from alignement import Alignement
-from track_window import Track_window
 
-def win_run():
-    global track_window
-    track_window = Track_window()
-    track_window.run()
-
-def main():
-    global track_window
+def main(video, drone):
     cible = 0
 
-    t = Thread(target=win_run)
-    t.start()
-
+    direction = Direction(video)
+    travel = Travel(drone)
+    alignement = Alignement(video)
 
     while True:
-        Track_window.update_current_step(track_window, cible)
+        print(f"cible: {cible}")
 
         #direction
-        Track_window.update_status(track_window, "Checking target position...")
-        Direction.import_mask_color(cible)
+        print("Obtention de la direction...")
+        direction.import_mask_color(cible)
+        angle_hori, angle_vert, length, distance = direction.check_angles()
 
         #travel
-        Track_window.update_status(track_window, "Traveling to the next target...")
-        angle_hori, angle_vert, length, distance = Direction.check_angles()
-        print(length)
-        Travel.move_to_target(angle_hori, angle_vert, distance)
+        print("Déplacement vers la cible...")
+        print(f"Longueur mesures: {length}")
+        travel.move_to_target(angle_hori, angle_vert, distance)
 
         # alignement
-        Track_window.update_status(track_window, "Alignment with the target...")
+        print("Alignement avec la cible...")
+        alignement.import_mask_color(cible)
+        alignement.align()
 
         # travel
-        Track_window.update_status(track_window, "Passing through the target...")
+        print("Passage à travers la cible...")
 
         cible += 1
-        if cible == 5:
+        
+        if cible == 1:
             break
-    t.join()
 
 if __name__ == '__main__':
-    main()
+    video = cv2.VideoCapture(0)
+    drone = Tello()
+    
+    main(video, drone)

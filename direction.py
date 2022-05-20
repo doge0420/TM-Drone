@@ -6,7 +6,7 @@ import utils
 class Direction:
     def __init__(self, video):
         self.video = video
-        self.import_mask_color("0")
+        # self.import_mask_color("0")
 
     # ouvre color_order.json pour obtenir les ranges de couleurs dans l'ordre du parcours
     def import_mask_color(self, cible: str):

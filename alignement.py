@@ -9,9 +9,8 @@ class Alignement:
         self.width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.center = int(self.width/2), int(self.height/2)
-        self.import_mask_color("0")
+        # self.import_mask_color("0")
         self.__set_roi()
-        
 
     def import_mask_color(self, cible: str):
         _, _, self.target_color = utils.import_mask_color(cible)
@@ -109,7 +108,6 @@ class Alignement:
                 self.__draw_line(img, object)
                 self.__check_roi(object)
             
-        
             # affichage de la caméra et du masque
             cv2.imshow("mask", mask), cv2.imshow("image", img) 
         

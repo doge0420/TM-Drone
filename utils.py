@@ -56,7 +56,7 @@ def unpack(tuple: tuple):
         angles_horiz.append(angle_1)
         angles_verti.append(angle_2)
 
-    return angles_horiz, angles_verti, length, distance
+    return get_median(angles_horiz), get_median(angles_verti), length, distance
 
 # pour avoir la distance entre deux points
 def get_two_points_distance(start, end):
@@ -90,6 +90,8 @@ def get_median(list):
     return statistics.median(list)
 
 def import_mask_color(cible):
+    cible = str(cible)
+    
     with open("./color_json/color_order.json", "r") as file:
             json_file = json.load(file)
             file.close()

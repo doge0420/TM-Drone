@@ -31,15 +31,25 @@ class Travel:
     def move_to_target(self, angle_hori, angle_vert, distance):
         x, y = self.__find_target_position(angle_vert, angle_hori, distance)
         
+        x, y = round(x), round(y)
+        
         if x < 0 and y < 0:
-            self.drone.move_left(abs(x))
-            self.drone.move_down(abs(y))
+            print(f"left: {abs(x)}")
+            print(f"up: {abs(y)}")
+            # self.drone.move_left(abs(x))
+            # self.drone.move_down(abs(y))
         elif x < 0 and y > 0:
-            self.drone.move_left(abs(x))
-            self.drone.move_up(abs(y))
+            print(f"left: {abs(x)}")
+            print(f"down: {abs(y)}")    
+            # self.drone.move_left(abs(x))
+            # self.drone.move_up(abs(y))
         elif x > 0 and y > 0:
-            self.drone.move_right(abs(x))
-            self.drone.move_up(abs(y))
+            print(f"right: {abs(x)}")
+            print(f"down: {abs(y)}")
+            # self.drone.move_right(abs(x))
+            # self.drone.move_up(abs(y))
         elif x > 0 and y < 0:
-            self.drone.move_right(abs(x))
-            self.drone.move_down(abs(y))
+            print(f"right: {abs(x)}")
+            print(f"up: {abs(y)}")
+            # self.drone.move_right(abs(x))
+            # self.drone.move_down(abs(y))
