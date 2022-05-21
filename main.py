@@ -21,13 +21,13 @@ def main(video, drone):
 
         #travel
         print("Déplacement vers la cible...")
-        print(f"Longueur mesures: {length}")
+        print(f"\tLongueur mesures: {length}")
         travel.move_to_target(angle_hori, angle_vert, distance)
 
         # alignement
-        print("Alignement avec la cible...")
-        alignement.import_mask_color(cible)
-        alignement.align()
+        # print("Alignement avec la cible...")
+        # alignement.import_mask_color(cible)
+        # alignement.align()
 
         # travel
         print("Passage à travers la cible...")
