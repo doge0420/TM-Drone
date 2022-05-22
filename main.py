@@ -9,7 +9,7 @@ def main(drone, test:bool = False):
 
     direction = Direction(drone)
     travel = Travel(drone)
-    alignement = Alignement(drone)
+    alignement = Alignement(drone, travel)
 
     while True:
         print(f"cible: {cible}")
@@ -28,9 +28,9 @@ def main(drone, test:bool = False):
 
         """alignement"""
         
-        # print("Alignement avec la cible...")
-        # alignement.import_mask_color(cible)
-        # alignement.align()
+        print("Alignement avec la cible...")
+        alignement.import_mask_color(cible)
+        alignement.align()
 
         """travel"""
         
@@ -38,7 +38,7 @@ def main(drone, test:bool = False):
 
         cible += 1
         
-        if cible == 1:
+        if cible == 2:
             break
 
     if not test:

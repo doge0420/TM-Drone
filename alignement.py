@@ -105,6 +105,8 @@ class Alignement:
 
     def align(self):
 
+        stop = 0
+
         while True:
             if self.test:
                 _, img = self.video.read()
@@ -131,12 +133,18 @@ class Alignement:
             
                 self.travel.lineup(status)
             
+            if status == "nothing":
+                stop += 1 
+            elif stop == 5:
+                cv2.destroyAllWindows()
+                break
+            
             # affichage de la caméra et du masque
             cv2.imshow("mask", mask), cv2.imshow("image", img) 
         
             if cv2.waitKey(1) & 0xFF == ord("q"):
-                    cv2.destroyAllWindows()
-                    break
+                cv2.destroyAllWindows()
+                break
                     
 if __name__ == '__main__':
     drone = Tello()
