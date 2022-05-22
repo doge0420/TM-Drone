@@ -3,13 +3,14 @@ import cv2
 from direction import Direction
 from travel import Travel
 from alignement import Alignement
+from time import sleep
 
-def main(drone, test:bool = False):
+def main(drone = None, test:bool = False):
     cible = 0
 
-    direction = Direction(drone)
-    travel = Travel(drone)
-    alignement = Alignement(drone, travel)
+    direction = Direction(drone, test)
+    travel = Travel(drone,test)
+    alignement = Alignement(drone, travel, test)
 
     while True:
         print(f"cible: {cible}")
@@ -34,6 +35,7 @@ def main(drone, test:bool = False):
 
         """travel"""
         
+        sleep(2)
         print("Passage à travers la cible...")
 
         cible += 1
@@ -58,5 +60,9 @@ def drone_init():
     return drone
 
 if __name__ == '__main__':
-    drone = drone_init()
-    main(drone)
+    test = True
+    if not test:
+        drone = drone_init()
+        main(drone)
+    else:
+        main(test = test)
