@@ -53,7 +53,7 @@ def drone_init():
     drone.set_speed(0)
     
     print(f"Batterie: {drone.get_battery()}%")
-    print(f"Temperature: {drone.get_highest_temperature(), drone.get_lowest_temperature()}C")  
+    print(f"Temperature: {drone.get_temperature()}C")  
     
     return drone
 
