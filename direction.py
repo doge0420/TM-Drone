@@ -4,10 +4,14 @@ import utils
 
 
 class Direction:
-    def __init__(self, video):
-        self.video = video
-        # self.import_mask_color("0")
-
+    def __init__(self, drone, test:bool = False):
+        self.test = test
+        if not self.test:
+            self.video = drone.get_frame_read()
+        if self.test:
+            self.video = cv2.VideoCapture(0)
+            self.import_mask_color("0")
+        
     # ouvre color_order.json pour obtenir les ranges de couleurs dans l'ordre du parcours
     def import_mask_color(self, cible: str):
         self.first_colors, self.second_colors, _ = utils.import_mask_color(cible)
@@ -84,7 +88,12 @@ class Direction:
         distance_f_list = []
 
         for i in range(100):     # capture x image
-            _, img = self.video.read()
+            if self.test:
+                _, img = self.video.read()
+            elif not self.test:
+                img = self.video.frame
+            else:
+                print("erreur de test")
 
             image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 

@@ -2,14 +2,20 @@ import cv2
 from travel import Travel
 import utils
 import numpy as np
+from djitellopy import Tello
 
 class Alignement:
-    def __init__(self, video):
-        self.video = video 
-        self.width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
-        self.height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    def __init__(self, drone, test:bool = False):
+        self.test = test
+        if not self.test:
+            self.video = drone.get_frame_read()
+        if self.test:
+            self.video = cv2.VideoCapture(0)
+            self.import_mask_color("0")
+
+        self.width = int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.height = int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.center = int(self.width/2), int(self.height/2)
-        # self.import_mask_color("0")
         self.__set_roi()
 
     def import_mask_color(self, cible: str):
@@ -79,19 +85,32 @@ class Alignement:
         x,y = object
         if x < self.a:
             print("move left")
+            status = "left"
         elif x > self.b:
             print("move right")
+            status = "right"
         elif y < self.c:
             print("move up")
+            status = "up"
         elif y > self.d:
             print("move down")
+            status = "down"
         else:
             print("do nothing")
+            status = "nothing"
+
+        return status
 
     def align(self):
 
         while True:
-            _, img = self.video.read()
+            if self.test:
+                _, img = self.video.read()
+            elif not self.test:
+                img = self.video.frame
+            else:
+                print("erreur de test")
+            
             image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             self.__set_roi()
             # pour avoir les masques
@@ -106,7 +125,9 @@ class Alignement:
             if object != None:
                 self.__draw_center(img)
                 self.__draw_line(img, object)
-                self.__check_roi(object)
+                status = self.__check_roi(object)
+            
+                
             
             # affichage de la caméra et du masque
             cv2.imshow("mask", mask), cv2.imshow("image", img) 
@@ -116,7 +137,7 @@ class Alignement:
                     break
                     
 if __name__ == '__main__':
-    video = cv2.VideoCapture(0)
+    drone = Tello()
     
-    a = Alignement(video)
+    a = Alignement(drone)
     a.align()

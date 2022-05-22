@@ -4,32 +4,36 @@ from direction import Direction
 from travel import Travel
 from alignement import Alignement
 
-def main(video, drone):
+def main(drone, test:bool = False):
     cible = 0
 
-    direction = Direction(video)
+    direction = Direction(drone)
     travel = Travel(drone)
-    alignement = Alignement(video)
+    alignement = Alignement(drone)
 
     while True:
         print(f"cible: {cible}")
 
-        #direction
+        """direction"""
+        
         print("Obtention de la direction...")
         direction.import_mask_color(cible)
         angle_hori, angle_vert, length, distance = direction.check_angles()
 
-        #travel
+        """travel"""
+        
         print("Déplacement vers la cible...")
         print(f"\tLongueur mesures: {length}")
         travel.move_to_target(angle_hori, angle_vert, distance)
 
-        # alignement
+        """alignement"""
+        
         # print("Alignement avec la cible...")
         # alignement.import_mask_color(cible)
         # alignement.align()
 
-        # travel
+        """travel"""
+        
         print("Passage à travers la cible...")
 
         cible += 1
@@ -37,8 +41,22 @@ def main(video, drone):
         if cible == 1:
             break
 
-if __name__ == '__main__':
-    video = cv2.VideoCapture(0)
+    if not test:
+        drone.end()
+
+def drone_init():
     drone = Tello()
+    drone.connect()
+    drone.streamoff()
+    drone.streamon()
+    drone.send_rc_control(0, 0, 0, 0)
+    drone.set_speed(0)
     
-    main(video, drone)
+    print(f"Batterie: {drone.get_battery()}%")
+    print(f"Temperature: {drone.get_highest_temperature(), drone.get_lowest_temperature()}C")  
+    
+    return drone
+
+if __name__ == '__main__':
+    drone = drone_init()
+    main(drone)

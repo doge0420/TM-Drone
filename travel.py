@@ -15,7 +15,6 @@ class Travel:
             angle = angle_hori
             print(f"\tangle:{angle}")
         
-        
         X_distance = math.cos(math.radians(angle))*distance
         Y_distance = math.sin(math.radians(angle))*distance
         
@@ -37,32 +36,53 @@ class Travel:
         
         print(f"\tx_distance:{X_distance}, y_distance:{Y_distance}")
                 
-                
         return X_distance, Y_distance
             
     # pour faire bouger le drone devant la cible
-    def move_to_target(self, angle_hori, angle_vert, distance):
+    def move_to_target(self, angle_hori, angle_vert, distance, test:bool = False):
         x, y = self.__find_target_position(angle_vert, angle_hori, distance)
         
         x, y = round(x), round(y)
         
-        if x < 0 and y < 0:
-            print(f"left: {abs(x)}")
-            print(f"down: {abs(y)}")
-            # self.drone.move_left(abs(x))
-            # self.drone.move_down(abs(y))
-        elif x < 0 and y > 0:
-            print(f"left: {abs(x)}")
-            print(f"up: {abs(y)}")    
-            # self.drone.move_left(abs(x))
-            # self.drone.move_up(abs(y))
-        elif x > 0 and y > 0:
-            print(f"right: {abs(x)}")
-            print(f"up: {abs(y)}")
-            # self.drone.move_right(abs(x))
-            # self.drone.move_up(abs(y))
-        elif x > 0 and y < 0:
-            print(f"right: {abs(x)}")
-            print(f"down: {abs(y)}")
-            # self.drone.move_right(abs(x))
-            # self.drone.move_down(abs(y))
+        if not test:
+            if x < 0 and y < 0:
+                self.drone.move_left(abs(x))
+                self.drone.move_down(abs(y))
+            elif x < 0 and y > 0:
+                self.drone.move_left(abs(x))
+                self.drone.move_up(abs(y))
+            elif x > 0 and y > 0:
+                self.drone.move_right(abs(x))
+                self.drone.move_up(abs(y))
+            elif x > 0 and y < 0:
+                self.drone.move_right(abs(x))
+                self.drone.move_down(abs(y))
+
+        if test:
+            if x < 0 and y < 0:
+                print(f"left: {abs(x)}")
+                print(f"down: {abs(y)}")
+            elif x < 0 and y > 0:
+                print(f"left: {abs(x)}")
+                print(f"up: {abs(y)}")    
+            elif x > 0 and y > 0:
+                print(f"right: {abs(x)}")
+                print(f"up: {abs(y)}")
+            elif x > 0 and y < 0:
+                print(f"right: {abs(x)}")
+                print(f"down: {abs(y)}")
+                
+    def lineup(self, status):
+        if status == "left":
+            self.drone.move_left(1)
+        elif status == "right":
+            self.drone.move_right(1)
+        elif status == "up":
+            self.drone.move_up(1)
+        elif status == "down":
+            self.drone.move_down(1)
+        else:
+            self.drone.move_left(0)
+            self.drone.move_right(0)
+            self.drone.move_down(0)
+            self.drone.move_up(0)
