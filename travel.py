@@ -74,15 +74,12 @@ class Travel:
                 
     def lineup(self, status):
         if status == "left":
-            self.drone.move_left(1)
+            self.drone.send_rc_control(-1, 0, 0, 0)
         elif status == "right":
-            self.drone.move_right(1)
+            self.drone.send_rc_control(1, 0, 0, 0)
         elif status == "up":
-            self.drone.move_up(1)
+            self.drone.send_rc_control(0, 0, -1, 0)
         elif status == "down":
-            self.drone.move_down(1)
+            self.drone.send_rc_control(0, 0, 1, 0)
         else:
-            self.drone.move_left(0)
-            self.drone.move_right(0)
-            self.drone.move_down(0)
-            self.drone.move_up(0)
+            self.drone.send_rc_control(0, 0, 0, 0)

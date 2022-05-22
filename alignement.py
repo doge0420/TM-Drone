@@ -5,10 +5,12 @@ import numpy as np
 from djitellopy import Tello
 
 class Alignement:
-    def __init__(self, drone, test:bool = False):
+    def __init__(self, drone, travel_obj, test:bool = False):
         self.test = test
+        self.drone = drone
+        self.travel = travel_obj
         if not self.test:
-            self.video = drone.get_frame_read()
+            self.video = self.drone.get_frame_read()
         if self.test:
             self.video = cv2.VideoCapture(0)
             self.import_mask_color("0")
@@ -127,7 +129,7 @@ class Alignement:
                 self.__draw_line(img, object)
                 status = self.__check_roi(object)
             
-                
+                self.travel.lineup(status)
             
             # affichage de la caméra et du masque
             cv2.imshow("mask", mask), cv2.imshow("image", img) 
