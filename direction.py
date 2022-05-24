@@ -141,8 +141,12 @@ class Direction:
             cv2.imshow("mask", mask), cv2.imshow("image", img)
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
+                if self.test:
+                    self.video.release()
                 cv2.destroyAllWindows()
                 return utils.unpack((angle_list, self.object_distance(contours_1, utils.get_median(distance_f_list))))
 
+        if self.test:
+            self.video.release()
         cv2.destroyAllWindows()
         return utils.unpack((angle_list, self.object_distance(contours_1, utils.get_median(distance_f_list))))

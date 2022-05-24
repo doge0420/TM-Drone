@@ -86,19 +86,14 @@ class Alignement:
     def __check_roi(self, object: tuple):
         x,y = object
         if x < self.a:
-            print("move left")
             status = "left"
         elif x > self.b:
-            print("move right")
             status = "right"
         elif y < self.c:
-            print("move up")
             status = "up"
         elif y > self.d:
-            print("move down")
             status = "down"
         else:
-            print("do nothing")
             status = "nothing"
 
         return status
@@ -132,16 +127,22 @@ class Alignement:
             
                 self.travel.lineup(status)
             
-            if status == "nothing":
-                stop += 1 
-            elif stop == 5:
-                cv2.destroyAllWindows()
-                break
+                if status == "nothing":
+                    stop += 1
+                    if stop == 5:
+                        if self.test:
+                            self.video.release()
+                        cv2.destroyAllWindows()
+                        break
+                else:
+                    stop = 0
             
             # affichage de la caméra et du masque
             cv2.imshow("mask", mask), cv2.imshow("image", img) 
         
             if cv2.waitKey(1) & 0xFF == ord("q"):
+                if self.test:
+                    self.video.release()
                 cv2.destroyAllWindows()
                 break
                     

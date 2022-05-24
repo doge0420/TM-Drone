@@ -11,27 +11,59 @@
             "name":"bible bleu"
             },
         "target" : {
-            "low": [110,150,90],
-            "high": [130,255,255],
-            "name": "labello"
+            "low": [
+                66,
+                79,
+                64
+            ],
+            "high": [
+                95,
+                255,
+                255
+            ],
+            "name": "green pen"
             }
     },
 
     "1": {
         "first" : {
-            "low":[110,150,20],
-            "high":[130,255,255],
-            "name": "blue"
+            "low": [
+                81,
+                205,
+                121
+            ],
+            "high": [
+                134,
+                255,
+                255
+            ],
+            "name": "post it bleu"
             },
         "second" : {
-            "low":[0,151,114],
-            "high":[10,227,255],
-            "name":"red"
+            "low": [
+                26,
+                58,
+                193
+            ],
+            "high": [
+                64,
+                255,
+                255
+            ],
+            "name":"post it jaune"
             },
         "target" : {
-            "low": [110,150,90],
-            "high": [130,255,255],
-            "name": "labello"
+            "low": [
+                66,
+                79,
+                64
+            ],
+            "high": [
+                95,
+                255,
+                255
+            ],
+            "name": "green pen"
             }
     }
 }

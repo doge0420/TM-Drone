@@ -3,6 +3,7 @@ import cv2
 from direction import Direction
 from travel import Travel
 from alignement import Alignement
+from time import sleep
 
 def main(test:bool = False):
     cible = 0
@@ -36,6 +37,7 @@ def main(test:bool = False):
 
         """travel"""
         
+        sleep(2)
         print("Passage à travers la cible...")
 
         cible += 1

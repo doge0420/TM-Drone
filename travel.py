@@ -1,8 +1,9 @@
 import math
 
 class Travel:
-    def __init__(self, drone):
+    def __init__(self, drone, test:bool = False):
         self.drone = drone
+        self.test = test
     
     # défini les composantes x et y en fontion des angles mesurés (fonction interne)
     @staticmethod
@@ -39,12 +40,12 @@ class Travel:
         return X_distance, Y_distance
             
     # pour faire bouger le drone devant la cible
-    def move_to_target(self, angle_hori, angle_vert, distance, test:bool = False):
+    def move_to_target(self, angle_hori, angle_vert, distance):
         x, y = self.__find_target_position(angle_vert, angle_hori, distance)
         
         x, y = round(x), round(y)
         
-        if not test:
+        if not self.test:
             if x < 0 and y < 0:
                 self.drone.move_left(abs(x))
                 self.drone.move_down(abs(y))
@@ -58,28 +59,41 @@ class Travel:
                 self.drone.move_right(abs(x))
                 self.drone.move_down(abs(y))
 
-        if test:
+        if self.test:
             if x < 0 and y < 0:
-                print(f"left: {abs(x)}")
-                print(f"down: {abs(y)}")
+                print(f"move left: {abs(x)}")
+                print(f"move down: {abs(y)}")
             elif x < 0 and y > 0:
-                print(f"left: {abs(x)}")
-                print(f"up: {abs(y)}")    
+                print(f"move left: {abs(x)}")
+                print(f"move up: {abs(y)}")    
             elif x > 0 and y > 0:
-                print(f"right: {abs(x)}")
-                print(f"up: {abs(y)}")
+                print(f"move right: {abs(x)}")
+                print(f"move up: {abs(y)}")
             elif x > 0 and y < 0:
-                print(f"right: {abs(x)}")
-                print(f"down: {abs(y)}")
-                
+                print(f"move right: {abs(x)}")
+                print(f"move down: {abs(y)}")
+
+       #pour l'alignement         
     def lineup(self, status):
-        if status == "left":
-            self.drone.send_rc_control(-1, 0, 0, 0)
-        elif status == "right":
-            self.drone.send_rc_control(1, 0, 0, 0)
-        elif status == "up":
-            self.drone.send_rc_control(0, 0, -1, 0)
-        elif status == "down":
-            self.drone.send_rc_control(0, 0, 1, 0)
+        if not self.test:
+            if status == "left":
+                self.drone.send_rc_control(-1, 0, 0, 0)
+            elif status == "right":
+                self.drone.send_rc_control(1, 0, 0, 0)
+            elif status == "up":
+                self.drone.send_rc_control(0, 0, -1, 0)
+            elif status == "down":
+                self.drone.send_rc_control(0, 0, 1, 0)
+            else:
+                self.drone.send_rc_control(0, 0, 0, 0)
         else:
-            self.drone.send_rc_control(0, 0, 0, 0)
+            if status == "left":
+                print("align left")
+            elif status == "right":
+                print("align right")
+            elif status == "up":
+                print("align up")
+            elif status == "down":
+                print("align down")
+            else:
+                print("aligned :)")
