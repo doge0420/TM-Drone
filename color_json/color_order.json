@@ -1,13 +1,13 @@
 {
     "0": {
         "first" : {
-            "low":[110,150,20],
-            "high":[130,255,255],
-            "name": "blue"
+            "low":[101,74,20],
+            "high":[123,255,255],
+            "name": "labello tello"
             },
         "second" : {
-            "low": [80,135,61],
-            "high": [130,255,255],
+            "low": [43,26,91],
+            "high": [96,255,255],
             "name":"bible bleu"
             },
         "target" : {

@@ -20,3 +20,5 @@ def capture():
             print("shutting down...")
             cv2.destroyAllWindows()
             tello.end()
+            
+capture()
