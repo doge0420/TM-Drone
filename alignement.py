@@ -15,8 +15,8 @@ class Alignement:
             self.video = cv2.VideoCapture(0)
             self.import_mask_color("0")
 
-        self.width = int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
-        self.height = int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.width = 640
+        self.height = 480
         self.center = int(self.width/2), int(self.height/2)
         self.__set_roi()
 
@@ -108,12 +108,11 @@ class Alignement:
         stop = 0
 
         while True:
-            if self.test:
-                _, img = self.video.read()
-            elif not self.test:
+            if not self.test:
                 img = self.video.frame
+                img = cv2.resize(img, (self.width, self.height))
             else:
-                print("erreur de test")
+                _, img = self.video.read()
             
             image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             self.__set_roi()

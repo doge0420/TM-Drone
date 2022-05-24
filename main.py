@@ -4,8 +4,10 @@ from direction import Direction
 from travel import Travel
 from alignement import Alignement
 
-def main(drone, test:bool = False):
+def main(test:bool = False):
     cible = 0
+
+    drone = drone_init()
 
     direction = Direction(drone)
     travel = Travel(drone)
@@ -50,7 +52,6 @@ def drone_init():
     drone.streamoff()
     drone.streamon()
     drone.send_rc_control(0, 0, 0, 0)
-    drone.set_speed(0)
     
     print(f"Batterie: {drone.get_battery()}%")
     print(f"Temperature: {drone.get_temperature()}C")  
@@ -58,5 +59,4 @@ def drone_init():
     return drone
 
 if __name__ == '__main__':
-    drone = drone_init()
-    main(drone)
+    main()

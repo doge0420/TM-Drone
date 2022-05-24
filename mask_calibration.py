@@ -2,29 +2,40 @@ import cv2
 import numpy as np
 from threading import Thread
 from mask_window import Color_window
-
-video = cv2.VideoCapture(0)
-
-color_state = 0
-color_sum = 2
+from djitellopy import Tello
+from time import sleep
 
 def win_run():
     global window
     window = Color_window()
     window.run()
 
-def main(video):
-    global color_state
-    global color_sum
+def main(test):
     global window
 
-    t = Thread(target=win_run)
-
+    t = Thread(target=win_run, daemon=True)
     t.start()
-    
-    while True:
-        _, img = video.read()
+ 
+    if not test:
+        drone = Tello()
+        drone.connect()
+        drone.streamon()
+        drone.send_rc_control(0, 0, 0, 0)
+        print(f"Batterie: {drone.get_battery()}%")
+        print(f"Temperature: {drone.get_temperature()}C")  
 
+        video = drone.get_frame_read()
+        sleep(3)
+    else:
+        video = cv2.VideoCapture(0)
+ 
+    while True:
+        if not test:
+            img = video.frame
+            img = cv2.resize(img, (640, 480))
+        else:
+            _, img = video.read()
+            
         image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         mask = window.get_mask(image)
 
@@ -46,4 +57,4 @@ def main(video):
             break
 
 if __name__ == '__main__':
-    main(video)
+    main(test=False)

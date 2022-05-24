@@ -87,13 +87,12 @@ class Direction:
         distance_list = []
         distance_f_list = []
 
-        for i in range(100):     # capture x image
-            if self.test:
-                _, img = self.video.read()
-            elif not self.test:
+        for i in range(200):     # capture x image
+            if not self.test:
                 img = self.video.frame
+                img = cv2.resize(img, (640, 480))
             else:
-                print("erreur de test")
+                _, img = self.video.read()
 
             image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
