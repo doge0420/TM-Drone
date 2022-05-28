@@ -27,7 +27,7 @@ def main(test):
         video = drone.get_frame_read()
         sleep(3)
     else:
-        video = cv2.VideoCapture(0)
+        video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
  
     while True:
         if not test:
@@ -57,4 +57,4 @@ def main(test):
             break
 
 if __name__ == '__main__':
-    main(test=False)
+    main(test=True)

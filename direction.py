@@ -6,11 +6,7 @@ import utils
 class Direction:
     def __init__(self, drone, test:bool = False):
         self.test = test
-        if not self.test:
-            self.video = drone.get_frame_read()
-        if self.test:
-            self.video = cv2.VideoCapture(0)
-            self.import_mask_color("0")
+        self.drone = drone
         
     # ouvre color_order.json pour obtenir les ranges de couleurs dans l'ordre du parcours
     def import_mask_color(self, cible: str):
@@ -82,10 +78,16 @@ class Direction:
             pass
 
     # fonction pour acquérir les angles et ainsi faire bouger le drone en fonction
-    def check_angles(self):
+    def check_angles(self, cible):
         angle_list = []
         distance_list = []
         distance_f_list = []
+
+        if not self.test:
+            self.video = self.drone.get_frame_read()
+        if self.test:
+            self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+            self.import_mask_color(cible)
 
         for i in range(200):     # capture x image
             if not self.test:
