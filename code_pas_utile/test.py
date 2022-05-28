@@ -1,5 +1,6 @@
 import cv2
 from djitellopy import Tello
+import utils
 
 # t = Direction(cv2.VideoCapture(0))
 
@@ -28,8 +29,16 @@ from djitellopy import Tello
 
 # cap = d.get_video_capture()
 
-cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(0)
 
-width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-print(width, height)
+# width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+# height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+# print(width, height)
+
+first_colors, second_colors, target_colors = utils.import_mask_color(0)
+
+print(first_colors, second_colors, target_colors)
+
+first_colors, second_colors, target_colors = utils.import_mask_color(1)
+
+print(first_colors, second_colors, target_colors)
