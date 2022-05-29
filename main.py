@@ -60,6 +60,7 @@ def drone_init():
     drone.connect()
     drone.streamoff()
     drone.streamon()
+    drone.takeoff()
     drone.send_rc_control(0, 0, 0, 0)
     
     print(f"Batterie: {drone.get_battery()}%")
