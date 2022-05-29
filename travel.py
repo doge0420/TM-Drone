@@ -40,7 +40,6 @@ class Travel:
                 
         return X_distance, Y_distance
 
-
     # pour faire bouger le drone devant la cible
     def move_to_target(self, angle_hori, angle_vert, distance):
         x, y = self.__find_target_position(angle_vert, angle_hori, distance)
@@ -50,27 +49,8 @@ class Travel:
         self.speed = 1
         
         if not self.test:
-            if x < 0 and y < 0:
-                #bas gauche
-                self.drone.go_xyz_speed(x, y, 0, self.speed)
-                # self.drone.move_left(abs(x))
-                # self.drone.move_down(abs(y))
-            elif x < 0 and y > 0:
-                #haut gauche
-                self.drone.go_xyz_speed(x, y, 0, self.speed)
-                # self.drone.move_left(abs(x))
-                # self.drone.move_up(abs(y))
-            elif x > 0 and y > 0:
-                #haut droite
-                self.drone.go_xyz_speed(x, y, 0, self.speed)
-                # self.drone.move_right(abs(x))
-                # self.drone.move_up(abs(y))
-            elif x > 0 and y < 0:
-                #bas droite
-                self.drone.go_xyz_speed(x, y, 0, self.speed)
-                # self.drone.move_right(abs(x))
-                # self.drone.move_down(abs(y))
-
+            self.drone.go_xyz_speed(x, y, 0, self.speed)
+            
         if self.test:
             if x < 0 and y < 0:
                 print(f"\t\tmove left: {abs(x)} and down: {abs(y)}")
