@@ -3,46 +3,53 @@ import cv2
 from direction import Direction
 from travel import Travel
 from alignement import Alignement
+import utils
 from time import sleep
 
 def main(test:bool = False):
     cible = 0
 
-    drone = drone_init()
+    if not test:
+        drone = drone_init()
+    else:
+        drone = None
 
-    direction = Direction(drone)
-    travel = Travel(drone)
-    alignement = Alignement(drone, travel)
+    direction = Direction( drone, test)
+    travel = Travel(drone, test)
+    alignement = Alignement(drone, travel, test)
 
     while True:
-        print(f"cible: {cible}")
+        print(f"--cible: {cible}--")
 
         """direction"""
         
-        print("Obtention de la direction...")
+        print("\tObtention de la direction...")
         direction.import_mask_color(cible)
-        angle_hori, angle_vert, length, distance = direction.check_angles()
+        angle_hori, angle_vert, length, distance = direction.check_angles(cible)
+        fromtarget, totarget = utils.import_mask_color(cible)[0]["name"],utils.import_mask_color(cible)[1]["name"]
+        print(f"\t\t{fromtarget} --> {totarget}")
 
         """travel"""
         
-        print("Déplacement vers la cible...")
-        print(f"\tLongueur mesures: {length}")
+        print("\n\tDéplacement vers la cible...")
+        print(f"\t\tLongueur mesures: {length}")
         travel.move_to_target(angle_hori, angle_vert, distance)
 
         """alignement"""
         
-        print("Alignement avec la cible...")
+        print("\n\tAlignement avec la cible...")
         alignement.import_mask_color(cible)
         alignement.align()
 
         """travel"""
         
-        sleep(2)
-        print("Passage à travers la cible...")
+        print("\n\tPassage à travers la cible...")
 
+        print(f"\n\t\t\t ######  Cible {cible} traversée :)  ######")
         cible += 1
         
         if cible == 2:
+            print(f"Parcours terminé! Le drone a traversé les {cible} cibles")
             break
 
     if not test:
@@ -61,4 +68,4 @@ def drone_init():
     return drone
 
 if __name__ == '__main__':
-    main()
+    main(test = True)

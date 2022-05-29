@@ -9,11 +9,6 @@ class Alignement:
         self.test = test
         self.drone = drone
         self.travel = travel_obj
-        if not self.test:
-            self.video = self.drone.get_frame_read()
-        if self.test:
-            self.video = cv2.VideoCapture(0)
-            self.import_mask_color("0")
 
         self.width = 640
         self.height = 480
@@ -101,6 +96,12 @@ class Alignement:
     def align(self):
 
         stop = 0
+
+        if not self.test:
+            self.video = self.drone.get_frame_read()
+        if self.test:
+            self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+            # self.import_mask_color("0")
 
         while True:
             if not self.test:
