@@ -1,37 +1,69 @@
 {
     "0": {
         "first" : {
-            "low":[110,150,20],
-            "high":[130,255,255],
-            "name": "blue"
+            "low":[101,74,20],
+            "high":[123,255,255],
+            "name": "labello tello"
             },
         "second" : {
-            "low":[0,151,114],
-            "high":[10,227,255],
-            "name":"red"
+            "low": [43,26,91],
+            "high": [96,255,255],
+            "name":"bible bleu"
             },
         "target" : {
-            "low":[146,148,152],
-            "high":[165,214,255],
-            "name": "pink"
+            "low": [
+                66,
+                79,
+                64
+            ],
+            "high": [
+                95,
+                255,
+                255
+            ],
+            "name": "green pen"
             }
     },
 
     "1": {
         "first" : {
-            "low":[139,103,103],
-            "high":[146,255,255],
-            "name": "purple"
+            "low": [
+                81,
+                205,
+                121
+            ],
+            "high": [
+                134,
+                255,
+                255
+            ],
+            "name": "post it bleu"
             },
         "second" : {
-            "low":[47,109,76],
-            "high":[70,255,255],
-            "name": "green"
+            "low": [
+                26,
+                58,
+                193
+            ],
+            "high": [
+                64,
+                255,
+                255
+            ],
+            "name":"post it jaune"
             },
         "target" : {
-            "low":[26,80,87],
-            "high":[34,255,255],
-            "name": "yellow"
+            "low": [
+                66,
+                79,
+                64
+            ],
+            "high": [
+                95,
+                255,
+                255
+            ],
+            "name": "green pen"
             }
     }
 }
