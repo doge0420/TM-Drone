@@ -44,7 +44,7 @@ def main(test:bool = False):
         """travel"""
         
         print("\n\tPassage à travers la cible...")
-        sleep(10)
+        sleep(3)
 
         print(f"\n\t\t\t ######  Cible {cible} traversée :)  ######")
         cible += 1
@@ -59,16 +59,15 @@ def main(test:bool = False):
 def drone_init():
     drone = Tello()
     drone.connect()
+    print(f"Batterie: {drone.get_battery()}%")
+    print(f"Temperature: {drone.get_temperature()}C")  
     drone.streamoff()
     drone.streamon()
     drone.takeoff()
-    sleep(5)
+    sleep(2)
     drone.send_rc_control(0, 0, 0, 0)
-    
-    print(f"Batterie: {drone.get_battery()}%")
-    print(f"Temperature: {drone.get_temperature()}C")  
     
     return drone
 
 if __name__ == '__main__':
-    main(test = False)
+    main(test = True)

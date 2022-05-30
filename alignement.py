@@ -90,7 +90,6 @@ class Alignement:
             status = "down"
         else:
             status = "nothing"
-
         return status
 
     def align(self):
@@ -130,7 +129,7 @@ class Alignement:
             
                 if status == "nothing":
                     stop += 1
-                    if stop == 5:
+                    if stop == 20:
                         if self.test:
                             self.video.release()
                         cv2.destroyAllWindows()

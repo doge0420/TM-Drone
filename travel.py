@@ -49,9 +49,7 @@ class Travel:
         self.speed = 10
         
         if not self.test:
-            self.drone.go_xyz_speed(0, -x, 0, self.speed)
-            sleep(5)
-            self.drone.go_xyz_speed(0, 0, y, self.speed)
+            self.drone.go_xyz_speed(0, -x, y, self.speed)
             
         if self.test:
             if x < 0 and y < 0:
@@ -67,13 +65,13 @@ class Travel:
     def lineup(self, status):
         if not self.test:
             if status == "left":
-                self.drone.send_rc_control(-10, 0, 0, 0)
+                self.drone.send_rc_control(-13, 0, 0, 0)
             elif status == "right":
-                self.drone.send_rc_control(10, 0, 0, 0)
+                self.drone.send_rc_control(13, 0, 0, 0)
             elif status == "up":
-                self.drone.send_rc_control(0, 0, 10, 0)
+                self.drone.send_rc_control(0, 0, 13, 0)
             elif status == "down":
-                self.drone.send_rc_control(0, 0, -10, 0)
+                self.drone.send_rc_control(0, 0, -13, 0)
             else:
                 self.drone.send_rc_control(0, 0, 0, 0)
         else:
