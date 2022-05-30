@@ -9,7 +9,7 @@ class Travel:
     # défini les composantes x et y en fontion des angles mesurés (fonction interne)
     @staticmethod
     def __find_target_position(angle_vert, angle_hori, distance):
-        print(f"\t\ttangle_vert:{angle_vert}, angle_hori:{angle_hori}, distance: {distance}")
+        print(f"\t\tangle_vert:{angle_vert}, angle_hori:{angle_hori}, distance: {distance}")
         if angle_hori > 90:
             angle = 180-angle_hori
         else:
@@ -17,8 +17,8 @@ class Travel:
         
         print(f"\t\tangle:{angle}")
         
-        X_distance = math.cos(math.radians(angle))*distance
-        Y_distance = math.sin(math.radians(angle))*distance
+        X_distance = math.cos(math.radians(angle))*distance * 10
+        Y_distance = math.sin(math.radians(angle))*distance * 10
         
         if angle_hori < 90:
             if angle_vert < 90:
@@ -46,10 +46,12 @@ class Travel:
         
         x, y = round(x), round(y)
 
-        self.speed = 1
+        self.speed = 10
         
         if not self.test:
-            self.drone.go_xyz_speed(x, y, 0, self.speed)
+            self.drone.go_xyz_speed(0, -x, 0, self.speed)
+            sleep(5)
+            self.drone.go_xyz_speed(0, 0, y, self.speed)
             
         if self.test:
             if x < 0 and y < 0:
@@ -65,13 +67,13 @@ class Travel:
     def lineup(self, status):
         if not self.test:
             if status == "left":
-                self.drone.send_rc_control(-1, 0, 0, 0)
+                self.drone.send_rc_control(-10, 0, 0, 0)
             elif status == "right":
-                self.drone.send_rc_control(1, 0, 0, 0)
+                self.drone.send_rc_control(10, 0, 0, 0)
             elif status == "up":
-                self.drone.send_rc_control(0, 0, -1, 0)
+                self.drone.send_rc_control(0, 0, 10, 0)
             elif status == "down":
-                self.drone.send_rc_control(0, 0, 1, 0)
+                self.drone.send_rc_control(0, 0, -10, 0)
             else:
                 self.drone.send_rc_control(0, 0, 0, 0)
         else:

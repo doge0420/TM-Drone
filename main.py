@@ -44,6 +44,7 @@ def main(test:bool = False):
         """travel"""
         
         print("\n\tPassage à travers la cible...")
+        sleep(10)
 
         print(f"\n\t\t\t ######  Cible {cible} traversée :)  ######")
         cible += 1
@@ -61,6 +62,7 @@ def drone_init():
     drone.streamoff()
     drone.streamon()
     drone.takeoff()
+    sleep(5)
     drone.send_rc_control(0, 0, 0, 0)
     
     print(f"Batterie: {drone.get_battery()}%")
@@ -69,4 +71,4 @@ def drone_init():
     return drone
 
 if __name__ == '__main__':
-    main(test = True)
+    main(test = False)
