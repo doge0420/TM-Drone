@@ -5,7 +5,8 @@ class Travel:
     def __init__(self, drone, test:bool = False):
         self.drone = drone
         self.test = test
-        self.essaie = 0
+        self.essai = 0
+        self.speed = 10
     
     # défini les composantes x et y en fontion des angles mesurés (fonction interne)
     @staticmethod
@@ -46,8 +47,6 @@ class Travel:
         x, y = self.__find_target_position(angle_vert, angle_hori, distance)
         
         x, y = round(x), round(y)
-
-        self.speed = 10
         
         if not self.test:
             self.drone.go_xyz_speed(0, -x, y, self.speed)
@@ -80,18 +79,22 @@ class Travel:
                 print("\t\taligned :)")
                 
     def search(self):
-        if self.essaie == 0:
-            self.drone.go_xyz_speed(0, 30, 0, self.speed)
-        elif self.essaie == 1:
-            self.drone.go_xyz_speed(0, -30, 30, self.speed)
-        elif self.essaie == 2:
-            self.drone.go_xyz_speed(0, -30, -30, self.speed)
-        elif self.essaie == 3:
-            self.drone.go_xyz_speed(0, 30, -30, self.speed)
+        rayon = 50
+
+        if self.essai == 0:
+            self.drone.go_xyz_speed(0, rayon, 0, self.speed)
+        elif self.essai == 1:
+            self.drone.go_xyz_speed(0, -rayon, rayon, self.speed)
+        elif self.essai == 2:
+            self.drone.go_xyz_speed(0, -rayon, -rayon, self.speed)
+        elif self.essai == 3:
+            self.drone.go_xyz_speed(0, rayon, -rayon, self.speed)
         else:
             pass
         
-        self.essaie += 1
+        self.essai += 1
         
-        if self.essaie > 3:
+        if self.essai > 3:
             self.drone.land()
+        
+        return self.essai

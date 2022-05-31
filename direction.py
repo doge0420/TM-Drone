@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
+from travel import Travel
 import utils
+from time import sleep
 
 class Direction:
     def __init__(self, drone, travel_obj, test: bool = False):
@@ -147,12 +149,18 @@ class Direction:
 
             frame += 1
 
-            # check si chaque x frame on a plus que y mesure dans distance_list
-            if frame == 30:
+            # check chaque x frame si on a plus que y mesure dans distance_list
+            if frame == 200:
                 if len(distance_list) < 30:
                     frame = 0
                     print("pas assez de mesures", len(distance_list))
-                    
+                    essai = self.travel.search()
+                    sleep(2)
+                if essai > 3:
+                    if self.test:
+                        self.video.release()
+                    cv2.destroyAllWindows()
+                    break
             # pour quitter la fenetre au cas ou
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 if self.test:
