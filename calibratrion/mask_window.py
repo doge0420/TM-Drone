@@ -308,7 +308,6 @@ class Color_window:
         with open("./color_json/presetcolorlist.json", "r+") as json_file:
             json_load = json.load(json_file)
             json_load[self.__get_entry()] = preset
-            print(json_load)
             json_file.seek(0)
             json.dump(json_load, json_file, indent=4)
             json_file.close()
