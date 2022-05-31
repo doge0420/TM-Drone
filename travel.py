@@ -5,6 +5,7 @@ class Travel:
     def __init__(self, drone, test:bool = False):
         self.drone = drone
         self.test = test
+        self.essaie = 0
     
     # défini les composantes x et y en fontion des angles mesurés (fonction interne)
     @staticmethod
@@ -61,7 +62,7 @@ class Travel:
             elif x > 0 and y < 0:
                 print(f"\t\tmove right: {abs(x)} and down: {abs(y)}")
 
-       #pour l'alignement         
+    # pour l'alignement         
     def lineup(self, status):
         if not self.test:
             if status == "left":
@@ -77,3 +78,20 @@ class Travel:
         else:
             if status == "nothing":
                 print("\t\taligned :)")
+                
+    def search(self):
+        if self.essaie == 0:
+            self.drone.go_xyz_speed(0, 30, 0, self.speed)
+        elif self.essaie == 1:
+            self.drone.go_xyz_speed(0, -30, 30, self.speed)
+        elif self.essaie == 2:
+            self.drone.go_xyz_speed(0, -30, -30, self.speed)
+        elif self.essaie == 3:
+            self.drone.go_xyz_speed(0, 30, -30, self.speed)
+        else:
+            pass
+        
+        self.essaie += 1
+        
+        if self.essaie > 3:
+            self.drone.land()

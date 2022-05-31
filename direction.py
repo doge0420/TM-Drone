@@ -2,18 +2,18 @@ import cv2
 import numpy as np
 import utils
 
-
 class Direction:
-    def __init__(self, drone, test:bool = False):
+    def __init__(self, drone, travel_obj, test: bool = False):
         self.test = test
         self.drone = drone
-        
+        self.travel = travel_obj
+
     # ouvre color_order.json pour obtenir les ranges de couleurs dans l'ordre du parcours
     def import_mask_color(self, cible: str):
         self.first_colors, self.second_colors, _ = utils.import_mask_color(cible)
 
     # crée le masque pour le premier objet
-    def first_mask(self, image):
+    def __first_mask(self, image):
         first_low = self.first_colors["low"]
         first_high = self.first_colors["high"]
 
@@ -31,7 +31,7 @@ class Direction:
         return cv2.inRange(image, lower_1, upper_1)
 
     # crée le masque pour le deuxième objet
-    def second_mask(self, image):
+    def __second_mask(self, image):
         second_low = self.second_colors["low"]
         second_high = self.second_colors["high"]
 
@@ -49,7 +49,7 @@ class Direction:
         return cv2.inRange(image, lower_2, upper_2)
 
     # pour dessiner les contours et trouver le centre de l'objet
-    def draw_on_object_and_find_center(self, contours, img):
+    def __draw_on_object_and_find_center(self, contours, img):
         if len(contours) != 0:
             for contour in contours:
                 if cv2.contourArea(contour) > 350:
@@ -65,7 +65,7 @@ class Direction:
             pass
 
     # pour obtenir la vraie distance entre deux objets avec les cotés verticaux de notre objet de refenrence (le premier masque)
-    def object_distance(self, contours, distance):
+    def __object_distance(self, contours, distance):
         if len(contours) != 0:
             for contour in contours:
                 if cv2.contourArea(contour) > 400:
@@ -75,13 +75,13 @@ class Direction:
                     distance = utils.get_distance(box, distance)
                     return distance
         else:
-            pass
+            print("ok")
 
     # fonction pour acquérir les angles et ainsi faire bouger le drone en fonction
     def check_angles(self, cible):
         angle_list = []
         distance_list = []
-        distance_f_list = []
+        frame = 0
 
         if not self.test:
             self.video = self.drone.get_frame_read()
@@ -89,7 +89,7 @@ class Direction:
             self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
             self.import_mask_color(cible)
 
-        for i in range(200):     # capture x image
+        while True:     # capture x image
             if not self.test:
                 img = self.video.frame
                 img = cv2.resize(img, (640, 480))
@@ -99,8 +99,8 @@ class Direction:
             image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
             # pour avoir les masques
-            mask_1 = self.first_mask(image)
-            mask_2 = self.second_mask(image)
+            mask_1 = self.__first_mask(image)
+            mask_2 = self.__second_mask(image)
 
             # trouver les objets de différentes couleurs
             contours_1, _ = cv2.findContours(
@@ -112,8 +112,8 @@ class Direction:
             mask = mask_1 | mask_2
 
             # définition des point de départ et d'arrivée de la ligne entre les deux objets
-            start = self.draw_on_object_and_find_center(contours_1, img)
-            end = self.draw_on_object_and_find_center(contours_2, img)
+            start = self.__draw_on_object_and_find_center(contours_1, img)
+            end = self.__draw_on_object_and_find_center(contours_2, img)
 
             # pour ne pas avoir de ligne s'il n'y a qu'un objet détécté
             if start and end != None:
@@ -127,28 +127,35 @@ class Direction:
                 cv2.line(img, start, vertical, (0, 255, 0), 2)
                 # retourne les angles entre les deux axes sous forme de tuple
                 angles = utils.get_angles(start, end)
-                distance_f = utils.get_two_points_distance(start, end)
-                distance_list.append(distance_f)
+                distance_pixel = utils.get_two_points_distance(start, end)
+                distance_list.append(distance_pixel)
                 cv2.putText(img, f"angle horizontal: {str(angles[0])}", (
                     50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)  # text avec angle
                 cv2.putText(img, f"angle vertical: {str(angles[1])}", (
                     50, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)  # text avec angle
                 angle_list.append(angles)   # ajoute les angles à la liste
 
-            if distance_list:
-                distance_f = utils.get_median(distance_list)
-                distance_f_list.append(distance_f)
+                # check si on a plus que x mesures et fini le loop si la condition est remplie
+                if len(distance_list) >= 30:
+                    if self.test:
+                        self.video.release()
+                    cv2.destroyAllWindows()
+                    return utils.unpack((angle_list, self.__object_distance(contours_1, utils.get_median(distance_list))))
 
             # affichage de la caméra et des deux masques combinés
             cv2.imshow("mask", mask), cv2.imshow("image", img)
 
+            frame += 1
+
+            # check si chaque x frame on a plus que y mesure dans distance_list
+            if frame == 30:
+                if len(distance_list) < 30:
+                    frame = 0
+                    print("pas assez de mesures", len(distance_list))
+                    
+            # pour quitter la fenetre au cas ou
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 if self.test:
                     self.video.release()
                 cv2.destroyAllWindows()
-                return utils.unpack((angle_list, self.object_distance(contours_1, utils.get_median(distance_f_list))))
-
-        if self.test:
-            self.video.release()
-        cv2.destroyAllWindows()
-        return utils.unpack((angle_list, self.object_distance(contours_1, utils.get_median(distance_f_list))))
+                break

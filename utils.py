@@ -87,7 +87,10 @@ def get_distance(box, distance_f):
 
 # pour avoir la mediane d'une liste
 def get_median(list):
-    return statistics.median(list)
+    if list:
+        return statistics.median(list)
+    else:
+        return
 
 def import_mask_color(cible):
     cible = str(cible)
