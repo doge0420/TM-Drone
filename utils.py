@@ -75,10 +75,13 @@ def get_distance(box, distance_f):
     d1, d2 = box[3]
     
     g1, g2 = c1-a1, c2-a2
-    d1, d2 = d1-b1, d2-b2
+    d1a, d2a = d1-b1, d2-b2
+    
+    # g1, g2 = d1-a1, d2-a2
+    # d1a, d2a = c1-b1, c2-b2
     
     g = sqrt(g1**2+g2**2)
-    d = sqrt(d1**2+d2**2)
+    d = sqrt(d1a**2+d2a**2)
     
     vert_side_measured_average = float16((g+d)/2)
     vert_side_real_size = 5 #cm

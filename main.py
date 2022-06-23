@@ -72,4 +72,4 @@ def drone_init():
     return drone
 
 if __name__ == '__main__':
-    main(test = False)
+    main(test = True)
