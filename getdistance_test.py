@@ -1,7 +1,17 @@
 import cv2
+from djitellopy import Tello
+from time import sleep
 import numpy as np
 import utils
-from time import sleep
+
+drone = Tello()
+drone.connect()
+print(f"Batterie: {drone.get_battery()}%")
+print(f"Temperature: {drone.get_temperature()}C")
+drone.streamoff()
+drone.streamon()
+sleep(2)
+drone.send_rc_control(0, 0, 0, 0)
 
 class Direction:
     def __init__(self, drone, travel_obj, test: bool = False):
@@ -59,8 +69,7 @@ class Direction:
                     box = np.int0(box)
                     x, y = utils.getcenter(box)
                     cv2.drawContours(img, [box], 0, (0, 0, 255), 2)
-                    cv2.circle(img, (x, y), radius=5,
-                               color=(0, 255, 0), thickness=-1)
+                    cv2.circle(img, (x, y), radius=5, color=(0, 255, 0), thickness=-1)
                     return x, y
         else:
             pass
@@ -69,33 +78,23 @@ class Direction:
     def __object_distance(self, contours, distance_pixel):
         if len(contours) != 0:
             for contour in contours:
-                if cv2.contourArea(contour) > 400:
+                if cv2.contourArea(contour) > 350:
                     rect = cv2.minAreaRect(contour)
                     box = cv2.boxPoints(rect)
                     box = np.int0(box)
                     distance = utils.get_distance(box, distance_pixel)
                     return distance
         else:
-            print("ok")
+            pass
 
     # fonction pour acquérir les angles et ainsi faire bouger le drone en fonction
-    def check_angles(self, cible):
-        angle_list = []
-        distance_list = []
-        frame = 0
+    def check_angles(self):
 
-        if not self.test:
-            self.video = self.drone.get_frame_read()
-        if self.test:
-            self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-            self.import_mask_color(cible)
+        self.video = self.drone.get_frame_read()
 
         while True:     # capture x image
-            if not self.test:
-                img = self.video.frame
-                img = cv2.resize(img, (640, 480))
-            else:
-                _, img = self.video.read()
+            img = self.video.frame
+            img = cv2.resize(img, (640, 480))
 
             image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
@@ -126,44 +125,31 @@ class Direction:
                 cv2.line(img, start, horizontal, (0, 255, 0), 2)
                 # pour dessiner l'axe vertical
                 cv2.line(img, start, vertical, (0, 255, 0), 2)
-                # retourne les angles entre les deux axes sous forme de tuple
-                angles = utils.get_angles(start, end)
-                distance_pixel = utils.get_two_points_distance(start, end)
-                distance_list.append(distance_pixel)
-                cv2.putText(img, f"angle horizontal: {str(angles[0])}", (
-                    50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)  # text avec angle
-                cv2.putText(img, f"angle vertical: {str(angles[1])}", (
-                    50, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)  # text avec angle
-                angle_list.append(angles)   # ajoute les angles à la liste
 
-                # check si on a plus que x mesures et fini le loop si la condition est remplie
-                if len(distance_list) >= 300:
-                    if self.test:
-                        self.video.release()
-                    cv2.destroyAllWindows()
-                    return utils.unpack((angle_list, self.__object_distance(contours_1, utils.get_median(distance_list))))
+                # # pour dessiner fake distance1
+                # cv2.line(img, (,), (,), (0, 0, 255), 2)
+                # # pour dessiner fake distance2
+                # cv2.line(img, (,), (,), (0, 0, 255), 2)
+                # # pour dessiner vert_side_measures_size
+                # cv2.line(img, (,), (,), (0, 0, 255), 2)
+
+
+                # retourne les angles entre les deux axes sous forme de tuple
+                distance_pixel = utils.get_two_points_distance(start, end)
+                distance = self.__object_distance(contours_1, distance_pixel)
+                cv2.putText(img, f"distance: {distance}", (
+                    50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)  # text avec angle
 
             # affichage de la caméra et des deux masques combinés
             cv2.imshow("mask", mask), cv2.imshow("image", img)
 
-            frame += 1
-
-            # check chaque x frame si on a plus que y mesure dans distance_list
-            # if frame == 200:
-            #     if len(distance_list) < 50:
-            #         frame = 0
-            #         print("pas assez de mesures", len(distance_list))
-            #         essai = self.travel.search()
-            #         sleep(2)
-            #     if essai > 3:
-            #         if self.test:
-            #             self.video.release()
-            #         cv2.destroyAllWindows()
-            #         break
-
             # pour quitter la fenetre au cas ou
             if cv2.waitKey(1) & 0xFF == ord("q"):
-                if self.test:
-                    self.video.release()
+                self.video.release()
                 cv2.destroyAllWindows()
                 break
+
+direction = Direction(drone, None, False)
+
+direction.import_mask_color(0)
+direction.check_angles()

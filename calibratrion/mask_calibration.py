@@ -59,4 +59,4 @@ def main(test):
             break
 
 if __name__ == '__main__':
-    main(test=True)
+    main(test=False)
