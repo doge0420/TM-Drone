@@ -1,5 +1,4 @@
 import math
-from time import sleep
 
 class Travel:
     def __init__(self, drone, test:bool = False):
@@ -41,6 +40,8 @@ class Travel:
         print(f"\t\tx_distance:{X_distance}, y_distance:{Y_distance}")
                 
         return X_distance, Y_distance
+    
+
 
     # pour faire bouger le drone devant la cible
     def move_to_target(self, angle_hori, angle_vert, distance):
@@ -98,3 +99,7 @@ class Travel:
             self.drone.land()
         
         return self.essai
+
+    def go_to_target(self, area):
+        area = ((15568*area) ** (-0.496))+20
+        self.drone.move_forward(area)

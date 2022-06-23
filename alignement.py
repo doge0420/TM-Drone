@@ -1,8 +1,8 @@
 import cv2
-from travel import Travel
 import utils
 import numpy as np
 from djitellopy import Tello
+from time import sleep
 
 class Alignement:
     def __init__(self, drone, travel_obj, test:bool = False):
@@ -140,6 +140,72 @@ class Alignement:
             # affichage de la caméra et du masque
             cv2.imshow("mask", mask), cv2.imshow("image", img) 
         
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                if self.test:
+                    self.video.release()
+                cv2.destroyAllWindows()
+                break
+    
+    def pass_target(self):
+        if not self.test:
+            self.video = self.drone.get_frame_read()
+        if self.test:
+            self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+        area_list = []
+        frame = 0
+
+        while True:
+            if not self.test:
+                img = self.video.frame
+                img = cv2.resize(img, (self.width, self.height))
+            else:
+                _, img = self.video.read()
+            
+            image = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+            blur = cv2.GaussianBlur(image, (5,5), 0)
+            self.__set_roi()
+            # pour avoir les masques
+            mask = self.__mask(blur)
+
+            # trouver les objets de différentes couleurs
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            
+            if len(contours) != 0:
+                for contour in contours:
+                    if cv2.contourArea(contour) > 350:
+                        rect = cv2.minAreaRect(contour)
+                        area = cv2.contourArea(contour)
+                        box = cv2.boxPoints(rect)
+                        box = np.int0(box)
+                        cv2.drawContours(img, [box], 0, (0, 0, 255), 2)
+                        area_list.append(area)
+
+                if len(area_list) >= 50:
+                        if self.test:
+                            self.video.release()
+                        cv2.destroyAllWindows()
+                        area = utils.get_median(area_list)
+                        self.travel.go_to_target(area)
+                        break
+
+            # affichage de la caméra et du masque
+            cv2.imshow("mask", mask), cv2.imshow("image", img) 
+        
+            frame += 1
+
+            if frame == 200:
+                if len(area_list) < 50:
+                    frame = 0
+                    print("pas assez de mesures", len(area_list))
+                    essai = self.travel.search()
+                    sleep(2)
+                if essai > 3:
+                    if self.test:
+                        self.video.release()
+                    cv2.destroyAllWindows()
+                    break
+
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 if self.test:
                     self.video.release()

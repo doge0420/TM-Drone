@@ -1,5 +1,4 @@
 from djitellopy import Tello
-import cv2
 from direction import Direction
 from travel import Travel
 from alignement import Alignement
@@ -46,7 +45,7 @@ def main(test: bool = False):
         """travel"""
 
         print("\n\tPassage à travers la cible...")
-        sleep(1)
+        alignement.pass_target()
 
         print(f"\n\t\t\t ######  Cible {cible} traversée :)  ######")
         cible += 1

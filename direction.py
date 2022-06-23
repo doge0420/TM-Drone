@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from travel import Travel
 import utils
 from time import sleep
 
