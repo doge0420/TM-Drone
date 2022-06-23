@@ -138,7 +138,7 @@ class Direction:
                 angle_list.append(angles)   # ajoute les angles à la liste
 
                 # check si on a plus que x mesures et fini le loop si la condition est remplie
-                if len(distance_list) >= 30:
+                if len(distance_list) >= 50:
                     if self.test:
                         self.video.release()
                     cv2.destroyAllWindows()
@@ -151,7 +151,7 @@ class Direction:
 
             # check chaque x frame si on a plus que y mesure dans distance_list
             if frame == 200:
-                if len(distance_list) < 30:
+                if len(distance_list) < 50:
                     frame = 0
                     print("pas assez de mesures", len(distance_list))
                     essai = self.travel.search()
