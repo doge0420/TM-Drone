@@ -101,5 +101,5 @@ class Travel:
         return self.essai
 
     def go_to_target(self, area):
-        area = ((15568*area) ** (-0.496))+20
+        area = ((15568*area) ** (-0.496))+80
         self.drone.move_forward(area)

@@ -73,10 +73,10 @@ class Alignement:
         cv2.line(image, left_down, right_down, color=(255, 230, 0), thickness=2)
     
     def __set_roi(self):
-        self.a = int(self.width * 2/5)
-        self.b = int(self.width * 3/5)
-        self.c = int(self.height * 2/5)
-        self.d = int(self.height * 3/5)
+        self.a = int(self.width * 9/20)
+        self.b = int(self.width * 11/20)
+        self.c = int(self.height * 17/100)
+        self.d = int(self.height * 17/60)
 
     def __check_roi(self, object: tuple):
         x,y = object
