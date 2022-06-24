@@ -18,8 +18,8 @@ class Travel:
         
         print(f"\t\tangle:{angle}")
         
-        X_distance = math.cos(math.radians(angle))*distance * 10
-        Y_distance = math.sin(math.radians(angle))*distance * 10
+        X_distance = math.cos(math.radians(angle))*distance * 5
+        Y_distance = math.sin(math.radians(angle))*distance * 5
         
         if angle_hori < 90:
             if angle_vert < 90:

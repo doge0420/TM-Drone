@@ -145,7 +145,8 @@ class Direction:
 
             # pour quitter la fenetre au cas ou
             if cv2.waitKey(1) & 0xFF == ord("q"):
-                self.video.release()
+                if not self.test:
+                    self.video.release()
                 cv2.destroyAllWindows()
                 break
 

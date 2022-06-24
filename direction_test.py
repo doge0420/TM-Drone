@@ -18,9 +18,9 @@ drone = drone_init()
 
 cible = 0
 
-direction = Direction(drone, None, True)
+direction = Direction(drone, None, False)
 direction.import_mask_color(cible)
 
 angle_hori, angle_vert, length, distance = direction.check_angles(cible)
 
-print(angle_hori, angle_vert, length, distance)
+print(f"\t\tangle_vert:{angle_vert}, angle_hori:{angle_hori}, length: {length}, distance: {distance}")
