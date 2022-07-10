@@ -14,10 +14,9 @@ t.start()
 
 drone = Tello()
 drone.connect()
-drone.streamon()
-# drone.turn_motor_on()
 print(f"Batterie: {drone.get_battery()}%")
 print(f"Temperature: {drone.get_temperature()}C")  
+drone.streamon()
 
 video = drone.get_frame_read()
 
@@ -29,7 +28,7 @@ while True:
     mask = window.get_mask(blur)
 
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
+ 
     if len(contours) != 0:
         for contour in contours:
             if cv2.contourArea(contour) > 350:
@@ -38,8 +37,11 @@ while True:
                 box = cv2.boxPoints(rect)
                 box = np.int0(box)
                 cv2.drawContours(img, [box], 0, (0, 0, 255), 2)
-                print(f"\t {area}")
-                print((15568*(area ** -0.496))+20)
+                cv2.putText(img, f"distance: {(15568*(area ** -0.496))+20} \narea: {area}", (
+                    50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)  # text avec angle
+                
+                # print(f"\t {area}")
+                # print((15568*(area ** -0.496))+20)
 
     cv2.imshow("mask", mask), cv2.imshow("image", img)
 

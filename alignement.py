@@ -181,7 +181,7 @@ class Alignement:
                         cv2.drawContours(img, [box], 0, (0, 0, 255), 2)
                         area_list.append(area)
 
-                if len(area_list) >= 50:
+                if len(area_list) >= 100:
                         if self.test:
                             self.video.release()
                         cv2.destroyAllWindows()
@@ -195,7 +195,7 @@ class Alignement:
             frame += 1
 
             if frame == 200:
-                if len(area_list) < 50:
+                if len(area_list) < 100:
                     frame = 0
                     print("pas assez de mesures", len(area_list))
                     essai = self.travel.search()
