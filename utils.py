@@ -1,5 +1,6 @@
 from math import sqrt, acos, degrees
 from numpy import float16
+import numpy as np
 import statistics
 import json
 
@@ -69,25 +70,40 @@ def get_two_points_distance(start, end):
 
 # pour avoir la vraie distance entre les deux objets de couleur [cm] avec les cotés verticaux de l'objet de ref
 def get_distance(box, distance_f):
-    a1, a2 = box[0]
-    b1, b2 = box[1]
-    c1, c2 = box[2]
-    d1, d2 = box[3]
+    box_new = np.zeros_like(box)
+    box = box.reshape((4,2))
+    add = box.sum(1)
+    box_new[0] = box[np.argmin(add)]
+    box_new[3] = box[np.argmax(add)]
+    diff = np.diff(box,axis = 1)
+    box_new[1] = box[np.argmin(diff)]
+    box_new[2] = box[np.argmax(diff)]
+
+    a1, a2 = box_new[0]
+    b1, b2 = box_new[1]
+    c1, c2 = box_new[2]
+    d1, d2 = box_new[3]
     
     g1, g2 = c1-a1, c2-a2
-    d1, d2 = d1-b1, d2-b2
+    d1a, d2a = d1-b1, d2-b2
+    
+    # g1, g2 = d1-a1, d2-a2
+    # d1a, d2a = c1-b1, c2-b2
     
     g = sqrt(g1**2+g2**2)
-    d = sqrt(d1**2+d2**2)
-    
+    d = sqrt(d1a**2+d2a**2)
+
     vert_side_measured_average = float16((g+d)/2)
-    vert_side_real_size = 5 #cm
+    vert_side_real_size = 10 #cm
     
     return (distance_f*vert_side_real_size)/vert_side_measured_average
 
 # pour avoir la mediane d'une liste
 def get_median(list):
-    return statistics.median(list)
+    if list:
+        return statistics.median(list)
+    else:
+        return
 
 def import_mask_color(cible):
     cible = str(cible)

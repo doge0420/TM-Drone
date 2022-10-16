@@ -20,7 +20,7 @@ def main(test):
         drone = Tello()
         drone.connect()
         drone.streamon()
-        drone.send_rc_control(0, 0, 0, 0)
+        # drone.turn_motor_on()
         print(f"Batterie: {drone.get_battery()}%")
         print(f"Temperature: {drone.get_temperature()}C")  
 
@@ -53,8 +53,10 @@ def main(test):
 
         if cv2.waitKey(1) & 0xFF == ord("q") or window.get_status() == False:
             cv2.destroyAllWindows()
+            # drone.turn_motor_off()
+            drone.end()
             t.join()
             break
 
 if __name__ == '__main__':
-    main(test=True)
+    main(test=False)

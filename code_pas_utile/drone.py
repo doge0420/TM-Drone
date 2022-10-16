@@ -5,6 +5,7 @@ tello = Tello()
 tello.connect()
 tello.streamoff()
 tello.streamon()
+tello.takeoff()
 
 print(f"Batterie: {tello.get_battery()}%")
 print(f"Temperature: {tello.get_highest_temperature(), tello.get_lowest_temperature()}C")
@@ -15,6 +16,7 @@ def capture():
     while truc:
         img = frame.frame
         cv2.imshow("frames", img)
+        tello.send_rc_control(0,0,0,0)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             truc = False
             print("shutting down...")
