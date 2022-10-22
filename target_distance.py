@@ -37,7 +37,7 @@ while True:
                 box = cv2.boxPoints(rect)
                 box = np.int0(box)
                 cv2.drawContours(img, [box], 0, (0, 0, 255), 2)
-                cv2.putText(img, f"distance: {(15568*(area ** -0.496))+20} \narea: {area}", (
+                cv2.putText(img, f"distance: {()+20} \narea: {area}", (
                     50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)  # text avec angle
                 
                 # print(f"\t {area}")
