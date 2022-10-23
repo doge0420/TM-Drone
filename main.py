@@ -5,6 +5,8 @@ from alignement import Alignement
 import utils
 from time import sleep
 
+nb_cible = 1
+
 def main(test: bool = False):
     cible = 0
 
@@ -50,7 +52,7 @@ def main(test: bool = False):
         print(f"\n\t\t\t ######  Cible {cible} traversée :)  ######")
         cible += 1
 
-        if cible == 1:
+        if cible == nb_cible:
             print(f"Parcours terminé! Le drone a traversé les {cible} cibles")
             break
 
