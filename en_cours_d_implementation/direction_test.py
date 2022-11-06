@@ -14,11 +14,12 @@ def drone_init():
 
     return drone
 
-drone = drone_init()
+# drone = drone_init()
+drone = None
 
 cible = 0
 
-direction = Direction(drone, None, False)
+direction = Direction(drone, None, True)
 direction.import_mask_color(cible)
 
 angle_hori, angle_vert, length, distance = direction.check_angles(cible)
